@@ -12,6 +12,7 @@ Etapa 5 del Proyecto Programado de Introducción al Análisis de Datos (IC-8076)
 | `index.html` | Presentación: escenas 3D (Three.js) y tres dashboards en vivo sobre el mercado 2024 |
 | `solver.js` | Lógica prescriptiva de la Etapa 4 en JavaScript (transferencias, greedy y programación entera, vender o no) |
 | `mercado.js` | Mercado 2024 (14,056 jugadores) que usan los dashboards de la presentación |
+| `extra.js` | Inventario de preguntas, resultados de los modelos de la Etapa 4 y datos del anexo (distribuciones, rankings y anomalías) |
 | `Etapa5_Grupo1.ipynb` | Notebook de la Etapa 5: inventario de preguntas, tablas y gráficos, dashboards con ipywidgets |
 | `data/male_players_2015-2024_liga_normalizada.csv` | Dataset normalizado de la Etapa 2 (derivado del dataset público de FIFA en Kaggle) |
 

@@ -224,6 +224,63 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 .roster.two > div:nth-child(-n+2) { border-top: 1px solid var(--line); }
 @media (max-width: 640px) { .roster.two { grid-template-columns: minmax(0, 1fr); } .roster.two > div:nth-child(2) { border-top: none; } }
 .stage3d.short { height: min(52vh, 460px); }
+.stage-legend { position: absolute; left: 12px; top: 10px; z-index: 3; flex-direction: column; gap: 6px; font-size: 12px; pointer-events: none; background: rgba(10,26,30,.6); padding: 8px 10px; }
+/* Inventario de preguntas */
+.invbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+input[type=search] { font: 500 15px/1.2 var(--body); color: var(--chalk); background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; width: min(100%, 320px); }
+input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { font: 600 12px/1 var(--mono); letter-spacing: .04em; color: var(--muted); background: transparent; border: 1px solid var(--line); padding: 8px 10px; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--chalk); color: var(--night); border-color: var(--chalk); }
+.chips button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+.invsum { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 6px 12px; align-items: center; font: 500 12px/1 var(--mono); color: var(--muted); }
+.invsum .bar { display: flex; height: 18px; }
+.invsum .bar span { display: flex; align-items: center; justify-content: center; color: var(--night); font-weight: 700; font-size: 11px; min-width: 0; overflow: hidden; }
+.invlist { border-top: 1px solid var(--line); max-height: min(56vh, 520px); overflow-y: auto; }
+.inv { border-bottom: 1px solid var(--line); }
+.inv summary { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 4px; cursor: pointer; list-style: none; }
+.inv summary::-webkit-details-marker { display: none; }
+.inv summary:focus-visible { outline: 2px solid var(--sky); outline-offset: -2px; }
+.inv .et { font: 600 12px/1 var(--mono); color: var(--flood); }
+.inv .pq { font-size: 15px; }
+.inv .rp { font: 700 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--night); background: var(--c); padding: 5px 7px; white-space: nowrap; }
+.inv .det { padding: 0 4px 14px 50px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted); }
+.inv .det b { color: var(--chalk); font-weight: 600; }
+.inv[open] summary .pq { color: var(--flood); }
+@media (max-width: 640px) { .inv summary { grid-template-columns: 28px minmax(0, 1fr); } .inv .rp { grid-column: 2; justify-self: start; } .inv .det { padding-left: 4px; } }
+
+/* Gráficos de los modelos */
+.mgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.mgrid[hidden] { display: none; }
+.mgrid > * { min-width: 0; }
+@media (max-width: 860px) { .mgrid { grid-template-columns: minmax(0, 1fr); } }
+.cmbox { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.cm h3 { font-size: 20px; margin-bottom: 8px; }
+.cm table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.cm th { font: 500 11px/1.2 var(--mono); color: var(--faint); padding: 6px; text-align: center; }
+.cm td { font: 600 20px/1 var(--display); text-align: center; padding: 18px 6px; border: 1px solid var(--line); }
+.cm td small { display: block; font: 400 11px/1.3 var(--mono); color: inherit; opacity: .8; margin-top: 4px; }
+.cm .met { font: 500 12px/1.6 var(--mono); color: var(--muted); margin-top: 8px; }
+@media (max-width: 480px) { .cmbox { grid-template-columns: minmax(0, 1fr); } }
+
+/* Anexo */
+.excontrols { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.excontrols select { width: auto; min-width: 220px; max-width: 100%; }
+.tbl-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tbl th { font: 600 11px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td.num, .tbl th.num { text-align: right; }
+.rk { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.rk > div { display: grid; grid-template-columns: 26px minmax(0, 1.2fr) minmax(0, 2fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.rk .pos { font: 600 12px/1 var(--mono); color: var(--faint); }
+.rk .nm small { display: block; color: var(--muted); font-size: 12px; }
+.rk .bar { height: 10px; background: var(--panel); position: relative; }
+.rk .bar span { position: absolute; inset: 0 auto 0 0; background: var(--sky); }
+.rk > div:first-child .bar span { background: var(--flood); }
+.rk .val { font: 600 14px/1 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .rk > div { grid-template-columns: 22px minmax(0, 1fr) auto; } .rk .bar { grid-column: 2 / 4; } }
+
 .reveal { transition: opacity .7s ease, transform .7s ease; }
 .js .reveal.pre { opacity: .001; transform: translateY(18px); }
 @media (prefers-reduced-motion: reduce) { .reveal { transition: none; } .js .reveal.pre { opacity: 1; transform: none; } }
@@ -262,10 +319,27 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
   </div>
 </section>
 
+<!-- 2 · Inventario de preguntas -->
+<section class="slide alt" id="inventario" data-name="Inventario">
+  <div class="wrap">
+    <p class="kicker">02 <b>Etapa 5 · Inventario de preguntas</b></p>
+    <h2>34 preguntas, cada una con su forma</h2>
+    <p class="lead">Se recorrieron las cuatro etapas anteriores y cada pregunta de negocio recibió una representación con una regla fija: <b>tabla</b> cuando importan los nombres o los valores exactos, <b>gráfico</b> cuando importa una comparación, una forma o una tendencia, y <b>dashboard</b> cuando el usuario cambia los datos de entrada.</p>
+    <div class="invsum" id="inv-sum" role="img" aria-label="Representación elegida por etapa"></div>
+    <div class="invbar">
+      <input type="search" id="inv-q" placeholder="Buscar una pregunta…" aria-label="Buscar una pregunta">
+      <div class="chips" id="inv-etapa" role="group" aria-label="Filtrar por etapa"></div>
+      <div class="chips" id="inv-rep" role="group" aria-label="Filtrar por representación"></div>
+    </div>
+    <div class="invlist" id="inv-list"></div>
+    <p class="source" id="inv-src">Toque una pregunta para ver su respuesta, la representación elegida y por qué · Paso 2 del notebook</p>
+  </div>
+</section>
+
 <!-- 2 · Datos -->
 <section class="slide alt" id="datos" data-name="Datos">
   <div class="wrap">
-    <p class="kicker">02 <b>Etapa 1 · Calidad</b></p>
+    <p class="kicker">03 <b>Etapa 1 · Calidad</b></p>
     <h2>Una base confiable, con lo dudoso marcado</h2>
     <p class="lead">Se usó la última actualización de cada edición de FIFA, que incluye las transferencias de toda la temporada. Los registros dudosos se marcaron con tres features de seguridad en lugar de borrarse.</p>
     <div class="stats reveal">
@@ -283,7 +357,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
   <div class="wrap">
     <div class="split">
       <div class="col">
-        <p class="kicker">03 <b>Etapa 2 · Modelo dimensional</b></p>
+        <p class="kicker">04 <b>Etapa 2 · Modelo dimensional</b></p>
         <h2>Europa concentra el <span class="hl">84.7 %</span> del valor</h2>
         <p class="lead" id="valor-text">Suma del valor de mercado de todas las temporadas: Europa reúne €345,100M de un total de €407,307M. Las demás regiones juntas no llegan a la quinta parte de la torre europea.</p>
         <div class="seg" role="group" aria-label="Nivel del drill-down">
@@ -302,7 +376,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
   <div class="wrap">
     <div class="split">
       <div class="col">
-        <p class="kicker">04 <b>Etapa 3 · Descriptivo</b></p>
+        <p class="kicker">05 <b>Etapa 3 · Descriptivo</b></p>
         <h2>La edad decide el margen de crecimiento</h2>
         <p class="lead">Los jóvenes tienen 13 puntos entre su nivel actual y su techo; los veteranos ya llegaron. El valor mediano alcanza su máximo en la etapa Prime, donde se juntan nivel y margen.</p>
         <div class="legend"><span><i style="background:var(--sky)"></i>Overall promedio</span><span><i style="background:var(--flood)"></i>Potencial promedio</span></div>
@@ -316,7 +390,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 <!-- 5 · Mercado -->
 <section class="slide" id="mercado" data-name="Mercado">
   <div class="wrap">
-    <p class="kicker">05 <b>Cubo de BI · roll-up por temporada</b></p>
+    <p class="kicker">06 <b>Cubo de BI · roll-up por temporada</b></p>
     <h2>El precio casi se triplicó; el nivel, no</h2>
     <div class="split">
       <div class="col">
@@ -332,25 +406,49 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
   </div>
 </section>
 
-<!-- 6 · Modelos -->
+<!-- 7 · Modelos predictivos -->
 <section class="slide alt" id="modelos" data-name="Modelos">
   <div class="wrap">
-    <p class="kicker">06 <b>Etapa 4 · Predictivo</b></p>
+    <p class="kicker">07 <b>Etapa 4 · Predictivo</b></p>
     <h2>El valor se predice bien; el salario, no tanto</h2>
     <div class="rings reveal" id="rings"></div>
-    <div class="col" style="gap:12px">
-      <h3>Cuatro tipos de jugador (K-Means, k = 4)</h3>
-      <div class="clusters" id="clusters" role="img" aria-label="Tamaño de los cuatro clusters de jugadores"></div>
-      <div class="cl-legend" id="cl-legend"></div>
+    <div class="seg" role="group" aria-label="Modelo que se muestra">
+      <button type="button" id="b-mv" aria-pressed="true">Valor de mercado</button>
+      <button type="button" id="b-mp" aria-pressed="false">Alto potencial</button>
     </div>
-    <p class="source">Fuente: Etapa 4, Paso 2 · métricas sobre jugadores que el modelo no vio al entrenar</p>
+    <div class="mgrid" id="m-valor">
+      <svg class="chart" id="c-pred" viewBox="0 0 520 400" role="img" aria-label="Valor real contra valor predicho"></svg>
+      <svg class="chart" id="c-coef" viewBox="0 0 520 400" role="img" aria-label="Coeficientes estandarizados del modelo de valor"></svg>
+    </div>
+    <div class="mgrid" id="m-pot" hidden>
+      <div class="cmbox" id="cm-box"></div>
+      <svg class="chart" id="c-roc" viewBox="0 0 520 400" role="img" aria-label="Curvas ROC de los dos clasificadores"></svg>
+    </div>
+    <p class="lead" id="m-text"></p>
+    <p class="source">Modelos de la Etapa 4 reentrenados con las mismas variables, semillas y particiones por jugador · los puntos son 1,500 jugadores de prueba que el modelo no vio</p>
+  </div>
+</section>
+
+<!-- 8 · Tipos de jugador (3D) -->
+<section class="slide" id="tipos" data-name="Tipos">
+  <div class="wrap">
+    <div class="split">
+      <div class="col">
+        <p class="kicker">08 <b>Etapa 4 · K-Means (k = 4)</b></p>
+        <h2>Cuatro tipos de jugador</h2>
+        <p class="lead">K-Means agrupó a los jugadores por edad, potencial, valor y salario, sin conocer las etiquetas; los nombres se pusieron después, mirando el perfil de cada grupo. Para verlos en 3D se usó PCA: tres componentes que resumen el 97 % de la variación de las cuatro variables.</p>
+        <div class="clusters" id="clusters" role="img" aria-label="Tamaño de los cuatro clusters de jugadores"></div>
+        <div class="roster" id="tipos-list"></div>
+      </div>
+      <div class="stage3d" id="s-clusters" role="img" aria-label="Nube 3D de jugadores coloreados por tipo, en tres componentes principales"><span class="stage-tip">PCA con 3 componentes · 3,000 registros · arrastre para girar</span></div>
+    </div>
   </div>
 </section>
 
 <!-- 7 · Dashboard: mercado de transferencias (3D) -->
 <section class="slide" id="fichajes" data-name="Fichajes">
   <div class="wrap">
-    <p class="kicker">07 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
+    <p class="kicker">09 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
     <h2 id="tf-title">Cinco promesas por <span class="hl">€41.0M</span></h2>
     <div class="dash">
       <div class="ctrl">
@@ -380,7 +478,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 <!-- 8 · Dashboard: construcción de equipo (3D) -->
 <section class="slide alt" id="equipo" data-name="Equipo">
   <div class="wrap">
-    <p class="kicker">08 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
+    <p class="kicker">10 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
     <h2 id="eq-title">Greedy contra programación lineal</h2>
     <div class="dash">
       <div class="ctrl">
@@ -410,7 +508,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 <!-- 9 · Dashboard: vender o no -->
 <section class="slide" id="venta" data-name="Venta">
   <div class="wrap">
-    <p class="kicker">09 <b>Dashboard · ¿Vender o retener?</b></p>
+    <p class="kicker">11 <b>Dashboard · ¿Vender o retener?</b></p>
     <h2 id="v-title">28 años, overall 82, potencial 83</h2>
     <div class="dash">
       <div class="ctrl">
@@ -440,7 +538,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 <!-- 10 · Cierre -->
 <section class="slide alt" id="cierre" data-name="Cierre">
   <div class="wrap">
-    <p class="kicker">10 <b>Conclusiones</b></p>
+    <p class="kicker">12 <b>Conclusiones</b></p>
     <h2>Lo que deja el proyecto</h2>
     <div class="closing">
       <ol class="takeaways">
@@ -459,12 +557,47 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
     </div>
   </div>
 </section>
+<!-- 13 · Anexo: explorar los datos -->
+<section class="slide" id="explorar" data-name="Explorar">
+  <div class="wrap">
+    <p class="kicker">13 <b>Anexo · Explorar los datos</b></p>
+    <h2>Para las preguntas del jurado</h2>
+    <p class="lead">Distribuciones, rankings y anomalías de la Etapa 3, calculados sobre el dataset completo de 175,872 registros.</p>
+    <div class="seg" role="group" aria-label="Qué explorar">
+      <button type="button" id="b-ex-dist" aria-pressed="true">Distribuciones</button>
+      <button type="button" id="b-ex-rank" aria-pressed="false">Rankings</button>
+      <button type="button" id="b-ex-anom" aria-pressed="false">Anomalías</button>
+    </div>
+    <div id="ex-dist" class="col">
+      <div class="excontrols">
+        <select id="ex-var" aria-label="Variable"></select>
+        <select id="ex-grupo" aria-label="Separar por"></select>
+        <label class="check"><input type="checkbox" id="ex-log"> Escala logarítmica</label>
+      </div>
+      <div class="mgrid" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)">
+        <svg class="chart" id="c-hist" viewBox="0 0 560 300" role="img" aria-label="Histograma de la variable elegida"></svg>
+        <svg class="chart" id="c-box" viewBox="0 0 380 300" role="img" aria-label="Boxplot de la variable elegida"></svg>
+      </div>
+      <div class="tbl-wrap"><table class="tbl" id="ex-stats"></table></div>
+    </div>
+    <div id="ex-rank" class="col" hidden>
+      <div class="excontrols"><select id="ex-rk" aria-label="Ranking"></select></div>
+      <div class="rk" id="ex-rk-list"></div>
+    </div>
+    <div id="ex-anom" class="col" hidden>
+      <div class="excontrols"><select id="ex-an" aria-label="Tabla de anomalías"></select></div>
+      <div class="tbl-wrap"><table class="tbl" id="ex-an-tbl"></table></div>
+    </div>
+    <p class="source">Un registro por jugador en los rankings de jugadores · clubes con al menos 50 registros y nacionalidades con al menos 100 · bigotes del boxplot = 1.5 × IQR</p>
+  </div>
+</section>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="mercado.js"></script>
 <script src="solver.js"></script>
+<script src="extra.js"></script>
 <script>
 (function () {
   'use strict';
@@ -609,7 +742,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
   (function () {
     const rings = [
       { v: 0.904, label: 'R² 0.904', m: 'Valor de mercado', d: 'Regresión lineal sobre log(valor). RMSE 0.4164; sube a 0.933 con temporada, posición y región.' },
-      { v: 0.75, label: 'F1 0.75', m: 'Potencial mayor a 85', d: 'Random Forest, PR-AUC 0.82. La logística detecta el 97 %, pero con 20 % de precisión.' },
+      { v: 0.744, label: 'F1 0.74', m: 'Potencial mayor a 85', d: 'Random Forest, PR-AUC 0.82. La logística detecta el 97 %, pero con 20 % de precisión.' },
       { v: 0.70, label: 'R² 0.70', m: 'Salario semanal', d: 'Con región, posición y temporada (0.60 sin ellas). Faltan el club y el contrato.' }];
     const box = document.getElementById('rings');
     rings.forEach((r, i) => {
@@ -628,7 +761,7 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
     const bar = document.getElementById('clusters'), leg = document.getElementById('cl-legend');
     cl.forEach(c => {
       const d = document.createElement('div'); d.style.flex = c[1]; d.style.background = c[2]; d.textContent = c[1] + '%'; bar.appendChild(d);
-      const l = document.createElement('div'); l.innerHTML = '<b></b>'; l.firstChild.textContent = c[1] + '%'; l.appendChild(document.createTextNode(c[0])); l.style.borderTop = '3px solid ' + c[2]; l.style.paddingTop = '6px'; leg.appendChild(l);
+      const l = document.createElement('div'); l.innerHTML = '<b></b>'; l.firstChild.textContent = c[1] + '%'; l.appendChild(document.createTextNode(c[0])); l.style.borderTop = '3px solid ' + c[2]; l.style.paddingTop = '6px'; if (leg) leg.appendChild(l);
     });
   })();
 
@@ -814,6 +947,234 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
     $('v-reset').addEventListener('click', () => { setVals({ 'v-edad': 28, 'v-ovr': 82, 'v-pot': 83, 'v-use-of': false, 'v-of': 16.2, 'v-use-sal': false, 'v-sal': 67, 'v-rov': 2, 'v-red': 2, 'v-vot': 2 }); vRender(); });
     vRender();
   }
+
+  /* ---------- Secciones con datos del notebook (inventario, modelos, anexo) ---------- */
+  const X = window.EXTRA;
+  const COLOR_EDAD_W = { Young: C.sky, Prime: C.flood, Veteran: '#C9D6D2' };
+  const PERFIL_C = ['#F2A93B', '#C9D6D2', '#6EC1E4', '#7F9893'];
+  const nfmt = (v, d) => v == null ? '—' : (+v).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+  function segToggle(ids, onChange) {
+    ids.forEach(([btn, key]) => $(btn).addEventListener('click', () => { ids.forEach(([b, k]) => $(b).setAttribute('aria-pressed', k === key)); onChange(key); }));
+  }
+
+  /* Inventario de preguntas */
+  if (X) (function () {
+    const inv = X.inventario;
+    const ETAPAS = ['Todas', 'Etapa 1', 'Etapa 2', 'Etapa 3', 'Etapa 4'], REPS = ['Todas', 'Tabla', 'Gráfico', 'Tabla + gráfico', 'Dashboard'];
+    const REPC = { 'Tabla': '#C9D6D2', 'Gráfico': C.sky, 'Tabla + gráfico': '#B79CF2', 'Dashboard': C.flood };
+    let fe = 'Todas', fr = 'Todas', q = '';
+    // Resumen: barras apiladas por etapa
+    const sum = $('inv-sum');
+    ETAPAS.slice(1).forEach(et => {
+      const lab = document.createElement('span'); lab.textContent = et; sum.appendChild(lab);
+      const bar = document.createElement('div'); bar.className = 'bar';
+      REPS.slice(1).forEach(rp => {
+        const n = inv.filter(p => p.Etapa === et && p['Representación'] === rp).length;
+        if (!n) return;
+        const s = document.createElement('span'); s.style.flex = n; s.style.background = REPC[rp]; s.textContent = n; s.title = rp + ': ' + n;
+        bar.appendChild(s);
+      });
+      bar.style.width = (inv.filter(p => p.Etapa === et).length / 15 * 100) + '%';
+      sum.appendChild(bar);
+    });
+    const leyenda = document.createElement('span'); sum.appendChild(leyenda);
+    const lg = document.createElement('div'); lg.className = 'legend';
+    REPS.slice(1).forEach(rp => { const s = document.createElement('span'); s.innerHTML = '<i></i>'; s.firstChild.style.background = REPC[rp]; s.appendChild(document.createTextNode(rp)); lg.appendChild(s); });
+    sum.appendChild(lg);
+    function chips(id, opts, get, set) {
+      const box = $(id); box.innerHTML = '';
+      opts.forEach(o => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o; b.setAttribute('aria-pressed', get() === o); b.addEventListener('click', () => { set(o); render(); }); box.appendChild(b); });
+    }
+    function render() {
+      chips('inv-etapa', ETAPAS, () => fe, v => { fe = v; });
+      chips('inv-rep', REPS, () => fr, v => { fr = v; });
+      const t = q.trim().toLowerCase();
+      const rows = inv.filter(p => (fe === 'Todas' || p.Etapa === fe) && (fr === 'Todas' || p['Representación'] === fr) &&
+        (!t || (p.Pregunta + ' ' + p['Respuesta (resumen)'] + ' ' + p['Sección']).toLowerCase().includes(t)));
+      const list = $('inv-list'); list.innerHTML = '';
+      rows.forEach(p => {
+        const d = document.createElement('details'); d.className = 'inv';
+        d.innerHTML = '<summary><span class="et"></span><span class="pq"></span><span class="rp"></span></summary><div class="det"><p><b>Respuesta:</b> <span class="a"></span></p><p><b>Representación:</b> <span class="v"></span> · <b>Dónde:</b> <span class="w"></span></p><p><b>Por qué:</b> <span class="y"></span></p></div>';
+        d.querySelector('.et').textContent = p.Etapa.replace('Etapa ', 'E');
+        d.querySelector('.pq').textContent = p.Pregunta;
+        const rp = d.querySelector('.rp'); rp.textContent = p['Representación']; rp.style.setProperty('--c', REPC[p['Representación']]);
+        d.querySelector('.a').textContent = p['Respuesta (resumen)'];
+        d.querySelector('.v').textContent = p.Visual + ' (' + p['Sección'] + ')';
+        d.querySelector('.w').textContent = p['Dónde (Paso 3)'];
+        d.querySelector('.y').textContent = p['Por qué'];
+        list.appendChild(d);
+      });
+      if (!rows.length) { const e = document.createElement('p'); e.className = 'note'; e.style.padding = '14px 4px'; e.textContent = 'Ninguna pregunta coincide con la búsqueda.'; list.appendChild(e); }
+      $('inv-src').textContent = rows.length + ' de ' + inv.length + ' preguntas · toque una para ver su respuesta, la representación elegida y por qué · Paso 2 del notebook';
+    }
+    $('inv-q').addEventListener('input', e => { q = e.target.value; render(); });
+    render();
+  })();
+
+  /* Modelos de la Etapa 4: real vs predicho, coeficientes, matrices de confusión y ROC */
+  if (X) (function () {
+    const V = X.valor, K = X.clasif;
+    // Real contra predicho
+    (function () {
+      const svg = $('c-pred'), x0 = 50, x1 = 505, y0 = 350, y1 = 20;
+      const vals = V.pts.flatMap(p => [p[0], p[1]]), lo = Math.floor(Math.min(...vals)), hi = Math.ceil(Math.max(...vals));
+      const Xs = v => x0 + (v - lo) / (hi - lo) * (x1 - x0), Ys = v => y0 - (v - lo) / (hi - lo) * (y0 - y1);
+      for (let v = lo; v <= hi; v += 2) {
+        el('line', { x1: Xs(v), x2: Xs(v), y1: y1, y2: y0, class: 'grid' }, svg); el('line', { x1: x0, x2: x1, y1: Ys(v), y2: Ys(v), class: 'grid' }, svg);
+        el('text', { x: Xs(v), y: y0 + 18, 'text-anchor': 'middle' }, svg, eur(Math.expm1(v)));
+        el('text', { x: x0 - 8, y: Ys(v) + 4, 'text-anchor': 'end' }, svg, eur(Math.expm1(v)));
+      }
+      const EDADES = ['Young', 'Prime', 'Veteran'];
+      V.pts.forEach(p => el('circle', { cx: Xs(p[0]).toFixed(1), cy: Ys(p[1]).toFixed(1), r: 2.2, fill: COLOR_EDAD_W[EDADES[p[2]]], opacity: 0.55 }, svg));
+      el('line', { x1: Xs(lo), y1: Ys(lo), x2: Xs(hi), y2: Ys(hi), stroke: C.chalk, 'stroke-dasharray': '6 5', 'stroke-width': 1.5 }, svg);
+      el('text', { x: x0 + 8, y: y1 + 14, style: 'fill:' + C.chalk + ';font-weight:600' }, svg, 'R² = ' + V.r2.toFixed(3) + ' · RMSE = ' + V.rmse.toFixed(4) + ' (log)');
+      el('text', { x: x0 + 8, y: y1 + 32 }, svg, 'el valor real suele estar dentro de un factor de ' + Math.exp(V.rmse).toFixed(2));
+      el('text', { x: (x0 + x1) / 2, y: y0 + 40, 'text-anchor': 'middle', style: 'fill:' + C.faint }, svg, 'valor predicho (escala log) → valor real ↑ · línea = predicción perfecta');
+      EDADES.forEach((g, i) => { el('circle', { cx: x1 - 150 + i * 55, cy: y0 - 12, r: 5, fill: COLOR_EDAD_W[g] }, svg); el('text', { x: x1 - 142 + i * 55, y: y0 - 8 }, svg, g); });
+    })();
+    // Coeficientes
+    (function () {
+      const svg = $('c-coef'), cf = V.coef, top = new Set(cf.slice(0, 5).map(c => c[0]));
+      const x0 = 185, x1 = 455, mx = Math.max(...cf.map(c => Math.abs(c[1]))), mn = Math.min(0, ...cf.map(c => c[1]));
+      const Xs = v => x0 + (v - mn) / (mx - mn) * (x1 - x0), rowH = 34;
+      el('text', { x: 0, y: 14, style: 'fill:' + C.faint }, svg, 'peso de cada variable (coeficiente estandarizado)');
+      el('line', { x1: Xs(0), x2: Xs(0), y1: 26, y2: 26 + rowH * cf.length, stroke: C.faint }, svg);
+      cf.forEach(([k, v], i) => {
+        const y = 34 + i * rowH;
+        el('text', { x: 100, y: y + 15, 'text-anchor': 'end', style: top.has(k) ? 'fill:' + C.chalk : '' }, svg, k);
+        el('rect', { x: Math.min(Xs(0), Xs(v)), y: y, width: Math.max(1.5, Math.abs(Xs(v) - Xs(0))), height: 20, fill: top.has(k) ? C.flood : '#3b5550' }, svg);
+        el('text', { x: v >= 0 ? Xs(v) + 6 : Xs(v) - 6, y: y + 15, 'text-anchor': v >= 0 ? 'start' : 'end', style: 'fill:' + C.chalk }, svg, (v >= 0 ? '+' : '') + v.toFixed(3));
+      });
+      el('text', { x: 0, y: 34 + cf.length * rowH + 18, style: 'fill:' + C.flood }, svg, 'naranja: las 5 variables que más afectan el valor');
+    })();
+    // Matrices de confusión
+    (function () {
+      const box = $('cm-box');
+      Object.entries(K).forEach(([nombre, d]) => {
+        const w = document.createElement('div'); w.className = 'cm';
+        const mx = Math.max(...d.cm.flat());
+        const cell = (v, lab, good) => '<td style="background:rgba(110,193,228,' + (0.08 + 0.55 * v / mx).toFixed(2) + ');color:' + (v / mx > 0.5 ? C.night : C.chalk) + '">' + nfmt(v) + '<small>' + lab + '</small></td>';
+        w.innerHTML = '<h3></h3><table><tr><th></th><th>Predice ≤ 85</th><th>Predice > 85</th></tr>' +
+          '<tr><th>Real ≤ 85</th>' + cell(d.cm[0][0], 'aciertos') + cell(d.cm[0][1], 'falsas alarmas') + '</tr>' +
+          '<tr><th>Real > 85</th>' + cell(d.cm[1][0], 'no detectados') + cell(d.cm[1][1], 'detectados') + '</tr></table>' +
+          '<p class="met">Precisión ' + d.precision.toFixed(2) + ' · Recall ' + d.recall.toFixed(2) + ' · F1 ' + d.f1.toFixed(2) + ' · PR-AUC ' + d.pr_auc.toFixed(2) + '</p>';
+        w.querySelector('h3').textContent = nombre;
+        box.appendChild(w);
+      });
+    })();
+    // Curvas ROC (zoom en 0-20 % de falsos positivos, donde se diferencian)
+    (function () {
+      const svg = $('c-roc'), x0 = 50, x1 = 505, y0 = 340, y1 = 20, FMAX = 0.2, YMIN = 0.5;
+      const Xs = v => x0 + Math.min(v, FMAX) / FMAX * (x1 - x0), Ys = v => y0 - (Math.max(v, YMIN) - YMIN) / (1 - YMIN) * (y0 - y1);
+      [0, 0.05, 0.1, 0.15, 0.2].forEach(v => { el('line', { x1: Xs(v), x2: Xs(v), y1: y1, y2: y0, class: 'grid' }, svg); el('text', { x: Xs(v), y: y0 + 18, 'text-anchor': 'middle' }, svg, Math.round(v * 100) + '%'); });
+      [0.5, 0.6, 0.7, 0.8, 0.9, 1].forEach(v => { el('line', { x1: x0, x2: x1, y1: Ys(v), y2: Ys(v), class: 'grid' }, svg); el('text', { x: x0 - 8, y: Ys(v) + 4, 'text-anchor': 'end' }, svg, Math.round(v * 100) + '%'); });
+      const cols = { 'Regresión logística': '#C9D6D2', 'Random Forest': C.flood };
+      Object.entries(K).forEach(([nombre, d], i) => {
+        const pts = d.roc.filter(p => p[0] <= FMAX);
+        el('path', { d: pts.map((p, j) => (j ? 'L' : 'M') + Xs(p[0]).toFixed(1) + ' ' + Ys(p[1]).toFixed(1)).join(' '), fill: 'none', stroke: cols[nombre], 'stroke-width': 3 }, svg);
+        el('line', { x1: x1 - 210, x2: x1 - 186, y1: y0 - 52 + i * 22, y2: y0 - 52 + i * 22, stroke: cols[nombre], 'stroke-width': 3 }, svg);
+        el('text', { x: x1 - 180, y: y0 - 48 + i * 22, style: 'fill:' + C.chalk }, svg, nombre + ' · AUC ' + d.roc_auc.toFixed(3));
+      });
+      el('text', { x: (x0 + x1) / 2, y: y0 + 40, 'text-anchor': 'middle', style: 'fill:' + C.faint }, svg, 'falsos positivos → (zoom 0-20 %) · detectados ↑');
+    })();
+    const TXT = {
+      v: 'Cada punto es un jugador que el modelo nunca vio: casi todos caen sobre la diagonal, así que la regresión acierta tanto con jugadores baratos como con estrellas. El overall pesa seis veces más que cualquier otra variable; la edad resta valor a igual nivel.',
+      p: 'La regresión logística detecta casi todos los jugadores de alto potencial (' + K['Regresión logística'].cm[1][1] + ' de ' + (K['Regresión logística'].cm[1][0] + K['Regresión logística'].cm[1][1]) + '), pero da ' + nfmt(K['Regresión logística'].cm[0][1]) + ' falsas alarmas. El Random Forest detecta ' + K['Random Forest'].cm[1][1] + ' con solo ' + K['Random Forest'].cm[0][1] + ': por eso es el modelo recomendado (F1 ' + K['Random Forest'].f1.toFixed(2) + ' contra ' + K['Regresión logística'].f1.toFixed(2) + ').'
+    };
+    $('m-text').textContent = TXT.v;
+    segToggle([['b-mv', 'v'], ['b-mp', 'p']], k => { $('m-valor').hidden = k !== 'v'; $('m-pot').hidden = k !== 'p'; $('m-text').textContent = TXT[k]; });
+  })();
+
+  /* Tipos de jugador: lista de perfiles */
+  if (X) (function () {
+    const list = $('tipos-list');
+    X.clusters.resumen.forEach((c, i) => {
+      const d = document.createElement('div');
+      d.innerHTML = '<i></i><span><span class="nm"></span><br><small></small></span><span class="r"></span><span class="v"></span>';
+      d.querySelector('i').style.background = PERFIL_C[i];
+      d.querySelector('.nm').textContent = c.perfil;
+      d.querySelector('small').textContent = c.edad + ' años · potencial ' + c.potencial + ' · ej.: ' + c.ejemplos.join(', ');
+      d.querySelector('.r').textContent = 'valor med. ' + eur(c.valor);
+      d.querySelector('.v').textContent = c.pct.toFixed(1) + '%';
+      list.appendChild(d);
+    });
+  })();
+
+  /* Anexo: distribuciones, rankings y anomalías */
+  if (X) (function () {
+    const E = X.explora;
+    segToggle([['b-ex-dist', 'dist'], ['b-ex-rank', 'rank'], ['b-ex-anom', 'anom']], k => { ['dist', 'rank', 'anom'].forEach(n => { $('ex-' + n).hidden = n !== k; }); });
+    // Distribuciones
+    const sv = $('ex-var'), sg = $('ex-grupo'), cl = $('ex-log');
+    Object.entries(E.vars).forEach(([k, n]) => { const o = document.createElement('option'); o.value = k; o.textContent = n; sv.appendChild(o); });
+    E.grupos.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = g === 'Todos' ? 'Sin separar' : 'Separar por ' + g.toLowerCase(); sg.appendChild(o); });
+    const GC = { Todos: C.sky, Young: C.sky, Prime: C.flood, Veteran: '#C9D6D2', Portero: '#B79CF2', Defensa: C.keep, Mediocampista: '#5CC98B', Delantero: C.sell, Right: C.sky, Left: C.flood };
+    const fv = (v, log) => log ? eur(Math.pow(10, v)) : (Math.abs(v) >= 1000 ? nfmt(v) : (+v).toFixed(1));
+    function drawDist() {
+      const log = cl.checked && ['value_eur', 'wage_eur'].includes(sv.value);
+      cl.disabled = !['value_eur', 'wage_eur'].includes(sv.value);
+      const D = E.dist[sv.value + '|' + (log ? 1 : 0) + '|' + sg.value]; if (!D) return;
+      const h = $('c-hist'); h.innerHTML = '';
+      const x0 = 50, x1 = 548, y0 = 255, y1 = 16, ed = D.edges, lo = ed[0], hi = ed[ed.length - 1];
+      const mx = Math.max(...D.series.flatMap(s => s.counts)), Xs = v => x0 + (v - lo) / (hi - lo) * (x1 - x0), Ys = v => y0 - v / mx * (y0 - y1);
+      for (let i = 0; i <= 4; i++) { const v = mx / 4 * i; el('line', { x1: x0, x2: x1, y1: Ys(v), y2: Ys(v), class: 'grid' }, h); el('text', { x: x0 - 6, y: Ys(v) + 4, 'text-anchor': 'end' }, h, nfmt(v)); }
+      for (let i = 0; i <= 5; i++) { const v = lo + (hi - lo) / 5 * i; el('text', { x: Xs(v), y: y0 + 18, 'text-anchor': 'middle' }, h, fv(v, log)); }
+      D.series.forEach(s => s.counts.forEach((c, i) => { if (c) el('rect', { x: Xs(ed[i]) + 0.5, y: Ys(c), width: Math.max(1, Xs(ed[i + 1]) - Xs(ed[i]) - 1), height: y0 - Ys(c), fill: GC[s.nombre] || C.sky, opacity: D.series.length > 1 ? 0.5 : 0.85 }, h); }));
+      if (D.series.length === 1) {
+        const st = D.series[0].stats;
+        [[st.media, 'media', C.sell], [st.mediana, 'mediana', '#5CC98B']].forEach(([v, t, c], i) => { el('line', { x1: Xs(v), x2: Xs(v), y1: y1, y2: y0, stroke: c, 'stroke-dasharray': '5 4', 'stroke-width': 2 }, h); el('text', { x: Xs(v) + (i ? -6 : 6), y: y1 + 12, 'text-anchor': i ? 'end' : 'start', style: 'fill:' + c }, h, t + ' ' + fv(v, log)); });
+      }
+      el('text', { x: x1, y: y0 + 38, 'text-anchor': 'end', style: 'fill:' + C.faint }, h, E.vars[sv.value] + (log ? ' (escala log)' : '') + ' · registros por intervalo');
+      const b = $('c-box'); b.innerHTML = '';
+      const bx0 = 20, bx1 = 370, n = D.series.length, rowH = Math.min(60, 230 / n), Bx = v => bx0 + (v - lo) / (hi - lo) * (bx1 - bx0);
+      D.series.forEach((s, i) => {
+        const st = s.stats, yc = 30 + i * rowH + rowH / 2, c = GC[s.nombre] || C.sky;
+        el('text', { x: bx0, y: yc - rowH / 2 + 10, style: 'fill:' + C.chalk }, b, s.nombre === 'Todos' ? 'Todos los registros' : s.nombre);
+        el('line', { x1: Bx(st.lo), x2: Bx(st.hi), y1: yc + 6, y2: yc + 6, stroke: C.muted }, b);
+        el('rect', { x: Bx(st.q1), y: yc - 4, width: Math.max(1, Bx(st.q3) - Bx(st.q1)), height: 20, fill: c, opacity: 0.75 }, b);
+        el('line', { x1: Bx(st.mediana), x2: Bx(st.mediana), y1: yc - 4, y2: yc + 16, stroke: C.night, 'stroke-width': 2.5 }, b);
+        el('circle', { cx: Bx(st.media), cy: yc + 6, r: 3.5, fill: C.chalk }, b);
+      });
+      el('text', { x: bx0, y: 292, style: 'fill:' + C.faint }, b, 'caja = Q1-Q3 · línea = mediana · punto = media');
+      const t = $('ex-stats');
+      t.innerHTML = '<tr><th>Grupo</th><th class="num">Registros</th><th class="num">Media</th><th class="num">Mediana</th><th class="num">Q1</th><th class="num">Q3</th><th class="num">Desv. est.</th><th class="num">Asimetría</th></tr>';
+      D.series.forEach(s => {
+        const st = s.stats, tr = document.createElement('tr');
+        [s.nombre, nfmt(st.n), fv(st.media, log), fv(st.mediana, log), fv(st.q1, log), fv(st.q3, log), log ? st.std.toFixed(2) + ' (log)' : fv(st.std, false), st.asim.toFixed(2)].forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (j) td.className = 'num'; tr.appendChild(td); });
+        t.appendChild(tr);
+      });
+    }
+    [sv, sg, cl].forEach(x => x.addEventListener('change', drawDist));
+    drawDist();
+    // Rankings
+    const sr = $('ex-rk');
+    Object.keys(E.rankings).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = 'Top 10 · ' + k; sr.appendChild(o); });
+    function drawRank() {
+      const R = E.rankings[sr.value], list = $('ex-rk-list'); list.innerHTML = '';
+      const vals = R.filas.map(f => f.valor), mx = Math.max(...vals), mn = R.euro || R.titulo === 'Registros' ? 0 : Math.min(...vals) * 0.97;
+      R.filas.forEach((f, i) => {
+        const d = document.createElement('div');
+        d.innerHTML = '<span class="pos"></span><span class="nm"><span></span><small></small></span><span class="bar"><span></span></span><span class="val"></span>';
+        d.querySelector('.pos').textContent = i + 1;
+        d.querySelector('.nm span').textContent = f.nombre;
+        d.querySelector('small').textContent = R.cols.map((c, j) => ({ club_name: '', Temporada: 'temp. ', age: '', nationality: '', Registros: '' }[c] || '') + f.extra[j] + (c === 'age' ? ' años' : c === 'Registros' ? ' registros' : '')).join(' · ');
+        d.querySelector('.bar span').style.width = Math.max(2, (f.valor - mn) / (mx - mn || 1) * 100) + '%';
+        d.querySelector('.val').textContent = R.euro ? eur(f.valor) : (Number.isInteger(f.valor) ? nfmt(f.valor) : f.valor.toFixed(2));
+        list.appendChild(d);
+      });
+    }
+    sr.addEventListener('change', drawRank); drawRank();
+    // Anomalías
+    const sa = $('ex-an');
+    Object.keys(E.anomalias).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; sa.appendChild(o); });
+    function drawAnom() {
+      const A = E.anomalias[sa.value], t = $('ex-an-tbl');
+      t.innerHTML = '';
+      const hr = document.createElement('tr'); A.cols.forEach((c, j) => { const th = document.createElement('th'); th.textContent = c; if (j >= 3) th.className = 'num'; hr.appendChild(th); }); t.appendChild(hr);
+      A.filas.forEach(f => { const tr = document.createElement('tr'); f.forEach((v, j) => { const td = document.createElement('td'); td.textContent = A.cols[j].includes('€') ? '€' + nfmt(v) : (typeof v === 'number' ? (Number.isInteger(v) ? String(v) : v.toFixed(1)) : v); if (j >= 3) td.className = 'num'; tr.appendChild(td); }); t.appendChild(tr); });
+    }
+    sa.addEventListener('change', drawAnom); drawAnom();
+  })();
 
   /* ---------- Escenas 3D ---------- */
   if (!window.THREE) {
@@ -1095,6 +1456,40 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
     });
     hooks.pitch = draw;
     if (hooks.eqDraw) hooks.eqDraw();
+  })();
+
+  /* Tipos de jugador: nube 3D en las tres componentes principales (como pide el enunciado: PCA para visualizar los clusters) */
+  if (X) (function () {
+    const s = stage('s-clusters', V(9, 6.5, 12), V(0, 2.4, 0), { spin: 0.45 });
+    if (!s) return;
+    const P = X.clusters.pts, ext = i => { let a = Infinity, b = -Infinity; P.forEach(p => { a = Math.min(a, p[i]); b = Math.max(b, p[i]); }); return [a, b]; };
+    const [a0, a1] = ext(0), [b0, b1] = ext(1), [c0, c1] = ext(2);
+    const Xs = v => (v - a0) / (a1 - a0) * 8 - 4, Ys = v => (v - b0) / (b1 - b0) * 5, Zs = v => 3 - (v - c0) / (c1 - c0) * 6;
+    const grid = new THREE.GridHelper(8, 8, col(C.faint), col(C.faint));
+    grid.material.transparent = true; grid.material.opacity = 0.22; grid.scale.z = 6 / 8; s.scene.add(grid);
+    const ag = new THREE.BufferGeometry();
+    ag.setAttribute('position', new THREE.Float32BufferAttribute([-4, 0, 3, 4, 0, 3, -4, 0, 3, -4, 5, 3, -4, 0, 3, -4, 0, -3], 3));
+    s.scene.add(new THREE.LineSegments(ag, lineMat(C.chalk, 0.55)));
+    const vr = X.clusters.varianza.map(v => Math.round(v * 100));
+    label(s, 'nivel y valor → (' + vr[0] + '%)', V(4.2, 0.35, 3.3), 'axis');
+    label(s, 'edad ↑ (' + vr[1] + '%)', V(-4, 5.55, 3), 'axis');
+    label(s, 'salario relativo (' + vr[2] + '%)', V(-4.4, 0.35, -3.4), 'axis');
+    const grupos = [];
+    PERFIL_C.forEach((c, k) => {
+      const pts = P.filter(p => p[3] === k), arr = new Float32Array(pts.length * 3);
+      let sx = 0, sy = 0, sz = 0;
+      pts.forEach((p, i) => { const x = Xs(p[0]), y = Ys(p[1]), z = Zs(p[2]); arr[i * 3] = x; arr[i * 3 + 1] = y; arr[i * 3 + 2] = z; sx += x; sy += y; sz += z; });
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      const pm = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.13, color: col(c), transparent: true, opacity: 0.85, depthWrite: false }));
+      s.scene.add(pm); grupos.push(pm);
+      const cx = sx / pts.length, cy = sy / pts.length, cz = sz / pts.length;
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.2, 24, 16), new THREE.MeshStandardMaterial({ color: col(c), emissive: col(c), emissiveIntensity: 0.5 }));
+      m.position.set(cx, cy, cz); s.scene.add(m);
+    });
+    const ley = document.createElement('div'); ley.className = 'legend stage-legend';
+    X.clusters.perfiles.forEach((n, k) => { const sp = document.createElement('span'); sp.innerHTML = '<i></i>'; sp.firstChild.style.background = PERFIL_C[k]; sp.appendChild(document.createTextNode(n)); ley.appendChild(sp); });
+    s.host.appendChild(ley);
+    s.update = t => { if (!reduce) grupos.forEach((g, i) => { g.material.opacity = 0.75 + 0.12 * Math.sin(t * 1.2 + i); }); };
   })();
 
   requestAnimationFrame(loop);
