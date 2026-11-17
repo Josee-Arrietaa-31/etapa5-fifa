@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Presentación interactiva de la Etapa 5 del proyecto FIFA 2015-2024 (IC-8076, Grupo 1).">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>FIFA: de datos a información</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: presentación vertical de pantallas completas, texto alineado a la izquierda sobre un estadio de noche; un solo acento de reflector */
+:root {
+  --night: #0A1A1E;
+  --night-2: #0F2429;
+  --panel: #122C31;
+  --chalk: #EEF2EC;
+  --muted: #A3B8B4;
+  --faint: #6E8A86;
+  --line: rgba(238, 242, 236, 0.13);
+  --flood: #F2A93B;
+  --sky: #6EC1E4;
+  --grass: #17503A;
+  --grass-2: #1B5A41;
+  --sell: #F0716A;
+  --keep: #6EA8F2;
+  --display: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  color-scheme: dark;
+}
+html { scroll-snap-type: y proximity; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--night); color: var(--chalk); font-family: var(--body); font-size: 17px; line-height: 1.55; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--night); }
+
+/* Barra de progreso y puntos de navegación */
+.progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; height: 3px; z-index: 31; background: transparent; }
+.progress span { display: block; height: 100%; width: 0; background: var(--flood); transition: width .2s linear; }
+.dots { position: fixed; right: max(14px, env(safe-area-inset-right, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 10px; }
+.dots button { width: 12px; height: 12px; padding: 0; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; cursor: pointer; position: relative; }
+.dots button.on { background: var(--flood); border-color: var(--flood); }
+.dots button:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+.dots button span { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); white-space: nowrap; font: 600 12px/1 var(--mono); letter-spacing: .06em; color: var(--muted); opacity: 0; transition: opacity .15s; pointer-events: none; }
+.dots button:hover span, .dots button:focus-visible span { opacity: 1; }
+@media (max-width: 760px) { .dots { display: none; } }
+
+/* Diapositivas */
+.slide { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; scroll-snap-align: start; padding-block: clamp(72px, 11vh, 120px); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); border-top: 1px solid var(--line); }
+.slide.alt { background: var(--night-2); }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding-inline: clamp(0px, 3vw, 40px); display: flex; flex-direction: column; gap: 28px; position: relative; z-index: 2; }
+.kicker { font: 600 13px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--flood); display: flex; gap: 14px; align-items: center; }
+.kicker b { color: var(--muted); font-weight: 600; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.02; margin: 0; text-wrap: balance; letter-spacing: .005em; }
+h1 { font-size: clamp(56px, 10vw, 148px); text-transform: uppercase; }
+h2 { font-size: clamp(38px, 5.6vw, 76px); max-width: 17ch; }
+h3 { font-size: clamp(22px, 2.2vw, 28px); font-weight: 500; }
+p { margin: 0; }
+.lead { font-size: clamp(18px, 1.7vw, 22px); color: var(--muted); max-width: 60ch; }
+.source { font: 400 12px/1.4 var(--mono); color: var(--faint); letter-spacing: .03em; }
+.hl { color: var(--flood); }
+.split { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.split > * { min-width: 0; }
+@media (max-width: 900px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.col { display: flex; flex-direction: column; gap: 22px; }
+
+/* Portada */
+#inicio { border-top: none; overflow: hidden; align-items: flex-end; }
+#inicio .stage3d { position: absolute; inset: 0; border: none; height: auto; background: none; z-index: 0; }
+#inicio::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(10,26,30,.25) 0%, rgba(10,26,30,.15) 40%, var(--night) 96%); }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 10px 28px; font: 500 14px/1.4 var(--mono); color: var(--muted); }
+.hint { font: 500 13px/1.4 var(--mono); color: var(--faint); }
+.hint kbd { font: inherit; color: var(--chalk); border: 1px solid var(--line); padding: 1px 6px; }
+
+/* Escenarios 3D */
+.stage3d { position: relative; height: min(62vh, 560px); min-height: 340px; border: 1px solid var(--line); background: radial-gradient(120% 90% at 50% 100%, var(--panel) 0%, var(--night) 70%); overflow: hidden; touch-action: pan-y; }
+.stage3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.stage3d canvas:active { cursor: grabbing; }
+.lbl { position: absolute; left: 0; top: 0; pointer-events: none; white-space: nowrap; font: 600 12px/1.25 var(--mono); color: var(--chalk); text-shadow: 0 1px 6px var(--night), 0 0 2px var(--night); transition: opacity .2s; text-align: center; }
+.lbl small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
+.lbl.big { font: 600 15px/1.2 var(--mono); }
+.lbl.axis { color: var(--faint); font-weight: 400; font-size: 11px; }
+.stage-tip { position: absolute; left: 12px; bottom: 10px; z-index: 3; font: 400 11px/1.3 var(--mono); color: var(--faint); pointer-events: none; }
+.no3d { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); font: 500 14px/1.5 var(--mono); }
+
+/* Controles */
+.seg { display: inline-flex; border: 1px solid var(--line); align-self: flex-start; }
+.seg button { font: 600 13px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: transparent; border: none; padding: 11px 16px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--flood); color: var(--night); }
+.seg button:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+/* Recorrido */
+.track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); margin-top: 12px; }
+.track div { padding: 22px 18px 0 0; display: flex; flex-direction: column; gap: 8px; position: relative; }
+.track div::before { content: ""; position: absolute; top: -5px; left: 0; width: 9px; height: 9px; background: var(--muted); border-radius: 50%; }
+.track div.now::before { background: var(--flood); box-shadow: 0 0 0 6px rgba(242,169,59,.18); }
+.track .n { font: 600 13px/1 var(--mono); color: var(--faint); }
+.track .now .n { color: var(--flood); }
+.track .t { font: 500 22px/1.15 var(--display); }
+.track .d { font-size: 14px; color: var(--muted); }
+@media (max-width: 760px) { .track { grid-template-columns: minmax(0,1fr); border-top: none; border-left: 1px solid var(--line); margin-left: 4px; } .track div { padding: 0 0 22px 22px; } .track div::before { left: -5px; top: 4px; } }
+
+/* Cifras */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.stat { padding: 26px 22px 24px 0; display: flex; flex-direction: column; gap: 8px; }
+.stat + .stat { padding-left: 22px; border-left: 1px solid var(--line); }
+.stat .num { font: 600 clamp(40px, 5vw, 68px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.stat .cap { font-size: 14px; color: var(--muted); max-width: 22ch; }
+.stat.warn .num { color: var(--flood); }
+@media (max-width: 760px) { .stats { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } .stat:nth-child(3) { padding-left: 0; border-left: none; } .stat:nth-child(n+3) { border-top: 1px solid var(--line); } }
+
+/* Gráficos SVG */
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font-family: var(--mono); fill: var(--muted); font-size: 12px; }
+.chart .axis { stroke: var(--line); stroke-width: 1; }
+.chart .grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 500 13px/1.3 var(--mono); color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; }
+
+/* Duelo de cifras */
+.duel { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px 40px; }
+.duel .k { font: 600 12px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.duel .v { font: 600 clamp(34px, 4.4vw, 56px)/1.05 var(--display); white-space: nowrap; }
+.duel .v.up { color: var(--flood); }
+.duel .c { font-size: 14px; color: var(--muted); }
+@media (max-width: 480px) { .duel { grid-template-columns: minmax(0,1fr); } }
+
+/* Modelos */
+.rings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.ring { display: flex; flex-direction: column; gap: 10px; }
+.ring svg { width: 100%; max-width: 170px; height: auto; }
+.ring .m { font: 500 22px/1.15 var(--display); }
+.ring .d { font-size: 14px; color: var(--muted); }
+@media (max-width: 640px) { .rings { grid-template-columns: minmax(0,1fr); } .ring { display: grid; grid-template-columns: 110px minmax(0,1fr); align-items: center; column-gap: 18px; } .ring svg { grid-row: span 2; } }
+.clusters { display: flex; height: 44px; border: 1px solid var(--line); }
+.clusters div { display: flex; align-items: center; padding: 0 10px; font: 600 12px/1.1 var(--mono); color: var(--night); overflow: hidden; white-space: nowrap; }
+.cl-legend { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; font-size: 13px; color: var(--muted); }
+.cl-legend b { display: block; color: var(--chalk); font: 500 18px/1.2 var(--display); }
+@media (max-width: 640px) { .cl-legend { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+
+/* Listas de jugadores y KPI */
+.roster { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.roster div { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.roster i { width: 10px; height: 10px; border-radius: 50%; align-self: center; }
+.roster small { color: var(--muted); font-size: 12px; }
+.roster .r { font: 500 14px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.roster .v { font: 600 15px/1 var(--mono); font-variant-numeric: tabular-nums; text-align: right; min-width: 64px; }
+.budget { display: flex; flex-direction: column; gap: 8px; }
+.budget .bar { height: 12px; background: var(--panel); border: 1px solid var(--line); position: relative; }
+.budget .bar span { position: absolute; inset: 0 auto 0 0; background: var(--flood); }
+.budget .row { display: flex; justify-content: space-between; font: 500 13px/1.3 var(--mono); color: var(--muted); }
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0; border-top: 1px solid var(--line); }
+.kpi { padding: 16px 16px 16px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; }
+.kpi:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); }
+.kpi .k { font: 500 12px/1.2 var(--mono); color: var(--faint); letter-spacing: .06em; text-transform: uppercase; }
+.kpi .v { font: 600 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: 13px; color: var(--muted); }
+
+/* Calculadora de venta */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.calc > * { min-width: 0; }
+@media (max-width: 900px) { .calc { grid-template-columns: minmax(0,1fr); } }
+.field { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.field label { display: flex; justify-content: space-between; gap: 12px; font: 600 13px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.field output { font: 600 26px/1 var(--display); color: var(--chalk); letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--flood); height: 28px; }
+.field .note { font-size: 13px; color: var(--faint); }
+.verdict { padding: 22px 24px; display: flex; flex-direction: column; gap: 6px; transition: background-color .25s; color: var(--night); }
+.verdict .k { font: 600 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
+.verdict .v { font: 700 clamp(44px, 6vw, 72px)/1 var(--display); text-transform: uppercase; }
+.verdict .d { font-size: 15px; font-weight: 500; }
+.verdict.sell { background: var(--sell); }
+.verdict.keep { background: var(--keep); }
+.crit { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.crit div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); align-items: center; font-size: 15px; }
+.crit .val { font: 500 13px/1.2 var(--mono); color: var(--muted); text-align: right; }
+.chip { font: 700 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 6px 9px; color: var(--night); min-width: 72px; text-align: center; }
+.chip.sell { background: var(--sell); }
+.chip.keep { background: var(--keep); }
+
+/* Cierre */
+.closing { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); }
+.closing > * { min-width: 0; }
+@media (max-width: 900px) { .closing { grid-template-columns: minmax(0,1fr); } }
+.takeaways { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); counter-reset: t; }
+.takeaways li { counter-increment: t; display: grid; grid-template-columns: 40px minmax(0,1fr); gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+.takeaways li::before { content: counter(t, decimal-leading-zero); font: 600 13px/1.9 var(--mono); color: var(--flood); }
+.limits { border: 1px solid var(--line); padding: 22px; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+.limits p { font-size: 15px; color: var(--muted); }
+.thanks { font: 600 clamp(44px, 7vw, 96px)/1 var(--display); text-transform: uppercase; color: var(--flood); }
+
+/* Dashboards */
+.dash { display: grid; grid-template-columns: minmax(0, 290px) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
+.dash > * { min-width: 0; }
+@media (max-width: 900px) { .dash { grid-template-columns: minmax(0, 1fr); } }
+.ctrl { display: flex; flex-direction: column; gap: 12px; }
+.ctrl .field { padding-bottom: 10px; gap: 4px; }
+.ctrl .field output { font-size: 20px; }
+.ctrl .field input:disabled { opacity: .35; }
+select { font: 500 14px/1.2 var(--body); color: var(--chalk); background: var(--panel); border: 1px solid var(--line); padding: 9px 10px; width: 100%; }
+select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+.check { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--muted); cursor: pointer; }
+.check input { accent-color: var(--flood); width: 18px; height: 18px; margin: 0; flex: none; }
+.reset { font: 600 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--chalk); background: transparent; border: 1px solid var(--line); padding: 10px 12px; cursor: pointer; align-self: flex-start; }
+.reset:hover { border-color: var(--flood); color: var(--flood); }
+.out { display: flex; flex-direction: column; gap: 18px; }
+.kprow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.kprow > div { padding: 12px 12px 12px 0; display: flex; flex-direction: column; gap: 4px; }
+.kprow > div + div { padding-left: 12px; border-left: 1px solid var(--line); }
+.kprow .k { font: 500 11px/1.2 var(--mono); color: var(--faint); letter-spacing: .06em; text-transform: uppercase; }
+.kprow .v { font: 600 26px/1 var(--display); font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .kprow { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kprow > div + div { padding-left: 0; border-left: none; } .kprow > div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--line); } }
+.msg { border-left: 3px solid var(--flood); padding: 10px 14px; background: var(--panel); font-size: 15px; }
+.msg[hidden] { display: none; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.cmp th, .cmp td { text-align: right; padding: 9px 0 9px 12px; border-bottom: 1px solid var(--line); }
+.cmp th:first-child, .cmp td:first-child { text-align: left; padding-left: 0; color: var(--muted); font-weight: 400; }
+.cmp th { font: 600 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+.cmp td.win { color: var(--flood); font-weight: 700; }
+.roster.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; border-top: none; }
+.roster.two > div:nth-child(-n+2) { border-top: 1px solid var(--line); }
+@media (max-width: 640px) { .roster.two { grid-template-columns: minmax(0, 1fr); } .roster.two > div:nth-child(2) { border-top: none; } }
+.stage3d.short { height: min(52vh, 460px); }
+.reveal { transition: opacity .7s ease, transform .7s ease; }
+.js .reveal.pre { opacity: .001; transform: translateY(18px); }
+@media (prefers-reduced-motion: reduce) { .reveal { transition: none; } .js .reveal.pre { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<nav class="dots" id="dots" aria-label="Diapositivas"></nav>
+
+<main>
+<!-- 0 · Portada -->
+<section class="slide" id="inicio" data-name="Inicio">
+  <div class="stage3d" id="s-hero" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">IC-8076 · Proyecto Programado <b>Etapa 5 de 5</b></p>
+    <h1>De datos<br>a <span class="hl">información</span></h1>
+    <p class="lead">Diez temporadas de jugadores de FIFA convertidas en decisiones de fichajes, ventas y alineaciones.</p>
+    <div class="hero-meta"><span>Grupo 1</span><span>Melany Arrieta</span><span>Andrés Arrieta</span><span>Laura Alpízar</span></div>
+    <p class="hint">Avance con <kbd>↓</kbd> o <kbd>espacio</kbd> · arrastre los gráficos 3D para girarlos</p>
+  </div>
+</section>
+
+<!-- 1 · Recorrido -->
+<section class="slide" id="recorrido" data-name="Recorrido">
+  <div class="wrap">
+    <p class="kicker">01 <b>El problema</b></p>
+    <h2>¿Cómo decide un club con diez temporadas de datos?</h2>
+    <p class="lead">Fichar a quién, vender o retener, y qué once alinear con el presupuesto disponible. El proyecto recorrió las cinco etapas del análisis de datos para responderlo.</p>
+    <div class="track reveal">
+      <div><span class="n">ETAPA 1</span><span class="t">Limpieza</span><span class="d">Un CSV de más de 5 GB reducido, unido y validado</span></div>
+      <div><span class="n">ETAPA 2</span><span class="t">Modelo dimensional</span><span class="d">Esquema estrella en MySQL con 5 tablas de hechos</span></div>
+      <div><span class="n">ETAPA 3</span><span class="t">Descriptivo</span><span class="d">Distribuciones, relaciones y anomalías</span></div>
+      <div><span class="n">ETAPA 4</span><span class="t">Predictivo y prescriptivo</span><span class="d">Modelos, optimización y cubos de BI</span></div>
+      <div class="now"><span class="n">ETAPA 5</span><span class="t">Visualización</span><span class="d">Tablas, gráficos, dashboards y esta presentación</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Datos -->
+<section class="slide alt" id="datos" data-name="Datos">
+  <div class="wrap">
+    <p class="kicker">02 <b>Etapa 1 · Calidad</b></p>
+    <h2>Una base confiable, con lo dudoso marcado</h2>
+    <p class="lead">Se usó la última actualización de cada edición de FIFA, que incluye las transferencias de toda la temporada. Los registros dudosos se marcaron con tres features de seguridad en lugar de borrarse.</p>
+    <div class="stats reveal">
+      <div class="stat"><span class="num" data-count="175872">175,872</span><span class="cap">registros jugador-temporada</span></div>
+      <div class="stat"><span class="num" data-count="10">10</span><span class="cap">temporadas, de 2015 a 2024</span></div>
+      <div class="stat"><span class="num" data-count="14056">14,056</span><span class="cap">jugadores activos en el mercado 2024</span></div>
+      <div class="stat warn"><span class="num" data-count="31.6" data-suffix="%" data-dec="1">31.6%</span><span class="cap">de los valores de 2024 fueron estimados en la limpieza</span></div>
+    </div>
+    <p class="source">Fuente: Etapas 1 y 4 · seis features derivados (GrupoEdad, TipoPosición, BrechaPotencial, IMC, ratio valor/salario, rating de atributos)</p>
+  </div>
+</section>
+
+<!-- 3 · Valor por región (3D) -->
+<section class="slide" id="valor" data-name="Valor">
+  <div class="wrap">
+    <div class="split">
+      <div class="col">
+        <p class="kicker">03 <b>Etapa 2 · Modelo dimensional</b></p>
+        <h2>Europa concentra el <span class="hl">84.7 %</span> del valor</h2>
+        <p class="lead" id="valor-text">Suma del valor de mercado de todas las temporadas: Europa reúne €345,100M de un total de €407,307M. Las demás regiones juntas no llegan a la quinta parte de la torre europea.</p>
+        <div class="seg" role="group" aria-label="Nivel del drill-down">
+          <button type="button" id="b-reg" aria-pressed="true">Regiones</button>
+          <button type="button" id="b-lig" aria-pressed="false">Top 5 ligas</button>
+        </div>
+        <p class="source">Fuente: Etapa 2, Consulta 2 · «Otras regiones» = total − Europa − América del Sur − América del Norte</p>
+      </div>
+      <div class="stage3d" id="s-towers" role="img" aria-label="Torres 3D del valor total de mercado por región o por liga"><span class="stage-tip">Arrastre para girar</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Edad -->
+<section class="slide alt" id="edad" data-name="Edad">
+  <div class="wrap">
+    <div class="split">
+      <div class="col">
+        <p class="kicker">04 <b>Etapa 3 · Descriptivo</b></p>
+        <h2>La edad decide el margen de crecimiento</h2>
+        <p class="lead">Los jóvenes tienen 13 puntos entre su nivel actual y su techo; los veteranos ya llegaron. El valor mediano alcanza su máximo en la etapa Prime, donde se juntan nivel y margen.</p>
+        <div class="legend"><span><i style="background:var(--sky)"></i>Overall promedio</span><span><i style="background:var(--flood)"></i>Potencial promedio</span></div>
+        <p class="source">Fuente: Etapa 4, cubo por grupo de edad · todas las temporadas</p>
+      </div>
+      <svg class="chart reveal" id="c-age" viewBox="0 0 640 360" role="img" aria-label="Overall y potencial promedio por grupo de edad"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Mercado -->
+<section class="slide" id="mercado" data-name="Mercado">
+  <div class="wrap">
+    <p class="kicker">05 <b>Cubo de BI · roll-up por temporada</b></p>
+    <h2>El precio casi se triplicó; el nivel, no</h2>
+    <div class="split">
+      <div class="col">
+        <div class="duel">
+          <div><p class="k">Valor mediano</p><p class="v up">€375K → €1.0M</p><p class="c">de 2015 a 2024</p></div>
+          <div><p class="k">Overall promedio</p><p class="v">63.8 → 67.1</p><p class="c">en el mismo período</p></div>
+        </div>
+        <p class="lead">Es un cambio de escala de FIFA, no jugadores mejores. Por eso todas las decisiones del análisis prescriptivo usan el mercado de una sola temporada: 2024.</p>
+        <p class="source">Fuente: Etapa 4, Paso 4.4 · se muestran los años cuyo valor se reportó; 2016, 2017 y 2022 no se reportaron</p>
+      </div>
+      <svg class="chart reveal" id="c-roll" viewBox="0 0 640 340" role="img" aria-label="Valor mediano de mercado por temporada"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Modelos -->
+<section class="slide alt" id="modelos" data-name="Modelos">
+  <div class="wrap">
+    <p class="kicker">06 <b>Etapa 4 · Predictivo</b></p>
+    <h2>El valor se predice bien; el salario, no tanto</h2>
+    <div class="rings reveal" id="rings"></div>
+    <div class="col" style="gap:12px">
+      <h3>Cuatro tipos de jugador (K-Means, k = 4)</h3>
+      <div class="clusters" id="clusters" role="img" aria-label="Tamaño de los cuatro clusters de jugadores"></div>
+      <div class="cl-legend" id="cl-legend"></div>
+    </div>
+    <p class="source">Fuente: Etapa 4, Paso 2 · métricas sobre jugadores que el modelo no vio al entrenar</p>
+  </div>
+</section>
+
+<!-- 7 · Dashboard: mercado de transferencias (3D) -->
+<section class="slide" id="fichajes" data-name="Fichajes">
+  <div class="wrap">
+    <p class="kicker">07 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
+    <h2 id="tf-title">Cinco promesas por <span class="hl">€41.0M</span></h2>
+    <div class="dash">
+      <div class="ctrl">
+        <div class="field"><label for="tf-pres">Presupuesto <output id="tf-pres-o">€100M</output></label><input type="range" id="tf-pres" min="10" max="300" step="5" value="100"></div>
+        <div class="field"><label for="tf-n">Jugadores a fichar <output id="tf-n-o">5</output></label><input type="range" id="tf-n" min="1" max="11" step="1" value="5"></div>
+        <div class="field"><label for="tf-edad">Edad menor a <output id="tf-edad-o">25</output></label><input type="range" id="tf-edad" min="18" max="35" step="1" value="25"></div>
+        <div class="field"><label for="tf-pot">Potencial mayor a <output id="tf-pot-o">85</output></label><input type="range" id="tf-pot" min="70" max="92" step="1" value="85"></div>
+        <label class="check" for="tf-ref">Media del valor por rating</label>
+        <select id="tf-ref"><option value="auto">Automática (Etapa 4)</option><option value="mercado">Todo el mercado</option><option value="grupo">Grupo elegible</option><option value="sin">Sin filtro</option></select>
+        <label class="check" for="tf-obj">Maximizar</label>
+        <select id="tf-obj"><option value="potencial">Potencial</option><option value="overall">Overall</option><option value="ambos">Potencial + overall</option></select>
+        <label class="check"><input type="checkbox" id="tf-est"> Excluir valores estimados</label>
+        <button type="button" class="reset" id="tf-reset">Valores del enunciado</button>
+      </div>
+      <div class="out">
+        <div class="stage3d short" id="s-scatter" role="img" aria-label="Espacio 3D de los candidatos y los fichajes elegidos: overall, potencial y valor de mercado"><span class="stage-tip">Gris: candidatos · color: fichajes · arrastre para girar</span></div>
+        <div class="kprow" id="tf-kpis"></div>
+        <p class="msg" id="tf-msg" hidden></p>
+        <div class="roster" id="roster"></div>
+        <div class="budget"><div class="bar"><span id="tf-bar" style="width:41%"></span></div><div class="row"><span id="tf-gasto">€41.0M gastados</span><span id="tf-libre">€59.0M libres de €100M</span></div></div>
+        <p class="source" id="tf-src">Mercado 2024 completo · misma lógica de la Etapa 4 (programación entera exacta)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Dashboard: construcción de equipo (3D) -->
+<section class="slide alt" id="equipo" data-name="Equipo">
+  <div class="wrap">
+    <p class="kicker">08 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
+    <h2 id="eq-title">Greedy contra programación lineal</h2>
+    <div class="dash">
+      <div class="ctrl">
+        <div class="field"><label for="eq-pres">Presupuesto <output id="eq-pres-o">€150M</output></label><input type="range" id="eq-pres" min="20" max="400" step="5" value="150"></div>
+        <label class="check" for="eq-form">Formación</label>
+        <select id="eq-form"><option>1-4-3-3</option><option>1-4-4-2</option><option>1-3-5-2</option><option>1-5-3-2</option><option>1-4-5-1</option><option>1-3-4-3</option></select>
+        <div class="field"><label for="eq-edad">Edad máxima <output id="eq-edad-o">sin límite</output></label><input type="range" id="eq-edad" min="17" max="45" step="1" value="45"></div>
+        <label class="check"><input type="checkbox" id="eq-est"> Excluir valores estimados</label>
+        <p class="check" style="cursor:default">Equipo en la cancha</p>
+        <div class="seg" role="group" aria-label="Método que se muestra en la cancha">
+          <button type="button" id="b-lp" aria-pressed="true">Prog. lineal</button>
+          <button type="button" id="b-gr" aria-pressed="false">Greedy</button>
+        </div>
+        <button type="button" class="reset" id="eq-reset">Valores del enunciado</button>
+      </div>
+      <div class="out">
+        <div class="stage3d short" id="s-pitch" role="img" aria-label="Cancha 3D con el equipo elegido; la altura de cada columna es el overall del jugador"><span class="stage-tip">Altura = overall del jugador · arrastre para girar</span></div>
+        <p class="msg" id="eq-msg" hidden></p>
+        <table class="cmp" id="eq-cmp"></table>
+        <div class="roster two" id="eq-roster"></div>
+        <p class="source">Greedy: de mayor a menor overall, reservando dinero para completar · programación entera exacta: máximo rating total y, a igual rating, menor costo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Dashboard: vender o no -->
+<section class="slide" id="venta" data-name="Venta">
+  <div class="wrap">
+    <p class="kicker">09 <b>Dashboard · ¿Vender o retener?</b></p>
+    <h2 id="v-title">28 años, overall 82, potencial 83</h2>
+    <div class="dash">
+      <div class="ctrl">
+        <div class="field"><label for="v-edad">Edad <output id="v-edad-o">28</output></label><input type="range" id="v-edad" min="17" max="40" step="1" value="28"></div>
+        <div class="field"><label for="v-ovr">Overall <output id="v-ovr-o">82</output></label><input type="range" id="v-ovr" min="55" max="92" step="1" value="82"></div>
+        <div class="field"><label for="v-pot">Potencial <output id="v-pot-o">83</output></label><input type="range" id="v-pot" min="55" max="95" step="1" value="83"></div>
+        <label class="check"><input type="checkbox" id="v-use-of"> Ingresar la oferta recibida</label>
+        <div class="field"><label for="v-of">Oferta <output id="v-of-o">€16.2M</output></label><input type="range" id="v-of" min="0.5" max="150" step="0.1" value="16.2" disabled></div>
+        <label class="check"><input type="checkbox" id="v-use-sal"> Ingresar el salario semanal</label>
+        <div class="field"><label for="v-sal">Salario <output id="v-sal-o">€67K</output></label><input type="range" id="v-sal" min="1" max="600" step="1" value="67" disabled></div>
+        <div class="field"><label for="v-rov">Pares: ± overall <output id="v-rov-o">2</output></label><input type="range" id="v-rov" min="1" max="5" step="1" value="2"></div>
+        <div class="field"><label for="v-red">Pares: ± años <output id="v-red-o">2</output></label><input type="range" id="v-red" min="1" max="5" step="1" value="2"></div>
+        <div class="field"><label for="v-vot">Criterios para vender <output id="v-vot-o">2 de 3</output></label><input type="range" id="v-vot" min="1" max="3" step="1" value="2"></div>
+        <button type="button" class="reset" id="v-reset">Valores del enunciado</button>
+      </div>
+      <div class="out">
+        <div class="verdict sell" id="verdict" aria-live="polite"><span class="k">Recomendación</span><span class="v" id="v-word">Vender</span><span class="d" id="v-desc"></span></div>
+        <p class="msg" id="v-msg" hidden></p>
+        <svg class="chart" id="c-step" viewBox="0 0 600 270" role="img" aria-label="Criterios a favor de vender según la oferta"></svg>
+        <div class="crit" id="crit"></div>
+        <p class="source" id="v-src"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Cierre -->
+<section class="slide alt" id="cierre" data-name="Cierre">
+  <div class="wrap">
+    <p class="kicker">10 <b>Conclusiones</b></p>
+    <h2>Lo que deja el proyecto</h2>
+    <div class="closing">
+      <ol class="takeaways">
+        <li>Una base limpia y trazable de diez temporadas, con los registros dudosos identificados y no borrados.</li>
+        <li>El overall fija el precio, la edad lo modula, y la escala de valores de FIFA casi se triplicó sin que subiera el nivel.</li>
+        <li>La programación lineal arma un equipo 100 puntos mejor que el greedy, y más barato.</li>
+        <li>Los dashboards de la Etapa 5 convierten recomendaciones fijas en respuestas para cualquier presupuesto, formación u oferta.</li>
+      </ol>
+      <div class="col">
+        <div class="limits">
+          <h3>Limitaciones</h3>
+          <p>El valor de mercado es una estimación de FIFA, no un precio real de transferencia. Un tercio de los valores de 2024 fue estimado. No hay lesiones, contratos ni cláusulas: los resultados apoyan la decisión, no la reemplazan.</p>
+        </div>
+        <p class="thanks">Gracias</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="mercado.js"></script>
+<script src="solver.js"></script>
+<script>
+(function () {
+  'use strict';
+  document.documentElement.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C = { chalk: css('--chalk'), muted: css('--muted'), faint: css('--faint'), flood: css('--flood'), sky: css('--sky'),
+              grass: css('--grass'), grass2: css('--grass-2'), sell: css('--sell'), keep: css('--keep'), night: css('--night'), panel: css('--panel') };
+  const POS = { DEL: C.sell, MED: '#5CC98B', DEF: C.keep, POR: '#B79CF2' };
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent, text) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  /* ---------- Navegación: puntos, progreso y teclado ---------- */
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.getElementById('dots');
+  slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ir a ' + s.dataset.name);
+    b.innerHTML = '<span>' + String(i).padStart(2, '0') + ' ' + s.dataset.name + '</span>';
+    b.addEventListener('click', () => s.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
+    dots.appendChild(b);
+  });
+  function current() {
+    const mid = innerHeight * 0.45;
+    let idx = 0;
+    slides.forEach((s, i) => { if (s.getBoundingClientRect().top <= mid) idx = i; });
+    return idx;
+  }
+  function onScroll() {
+    const i = current();
+    Array.from(dots.children).forEach((d, j) => d.classList.toggle('on', j === i));
+    const max = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('bar').style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('input, button, textarea, select')) return;
+    const next = ['ArrowDown', 'PageDown', ' ', 'ArrowRight'].includes(e.key);
+    const prev = ['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key);
+    if (!next && !prev) return;
+    e.preventDefault();
+    const i = Math.max(0, Math.min(slides.length - 1, current() + (next ? 1 : -1)));
+    slides[i].scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  });
+
+  /* ---------- Entradas suaves y contadores ---------- */
+  const fmtInt = n => Math.round(n).toLocaleString('en-US');
+  function countUp(node) {
+    const target = parseFloat(node.dataset.count), dec = +(node.dataset.dec || 0), suf = node.dataset.suffix || '';
+    const t0 = performance.now(), dur = 1200;
+    function step(t) {
+      const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3), v = target * e;
+      node.textContent = (dec ? v.toFixed(dec) : fmtInt(v)) + suf;
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.remove('pre');
+      en.target.querySelectorAll('[data-count]').forEach(countUp);
+      io.unobserve(en.target);
+    }), { threshold: 0.25 });
+    document.querySelectorAll('.reveal').forEach(r => {
+      const b = r.getBoundingClientRect();
+      if (b.top > innerHeight) { r.classList.add('pre'); io.observe(r); }
+    });
+  }
+
+  /* ---------- Gráfico: overall vs potencial por grupo de edad ---------- */
+  (function () {
+    const svg = document.getElementById('c-age');
+    const data = [
+      { g: 'Young', r: '16-20 años', o: 59.2, p: 72.3, v: '€328K', n: '31,605' },
+      { g: 'Prime', r: '21-28 años', o: 66.4, p: 71.2, v: '€900K', n: '100,374' },
+      { g: 'Veteran', r: '29+ años', o: 69.0, p: 69.3, v: '€750K', n: '43,893' }];
+    const x0 = 120, x1 = 610, lo = 55, hi = 75, X = v => x0 + (v - lo) / (hi - lo) * (x1 - x0);
+    for (let v = lo; v <= hi; v += 5) {
+      el('line', { x1: X(v), x2: X(v), y1: 20, y2: 300, class: 'grid' }, svg);
+      el('text', { x: X(v), y: 326, 'text-anchor': 'middle' }, svg, v);
+    }
+    el('text', { x: x1, y: 346, 'text-anchor': 'end' }, svg, 'puntos (eje desde 55)');
+    data.forEach((d, i) => {
+      const y = 62 + i * 96;
+      el('text', { x: 0, y: y - 4, style: 'fill:' + C.chalk + ';font-family:Oswald, Arial Narrow, sans-serif;font-size:22px' }, svg, d.g);
+      el('text', { x: 0, y: y + 16 }, svg, d.r);
+      el('text', { x: 0, y: y + 34, style: 'fill:' + C.faint }, svg, 'valor med. ' + d.v);
+      el('line', { x1: X(d.o), x2: X(d.p), y1: y, y2: y, stroke: C.faint, 'stroke-width': 3 }, svg);
+      el('circle', { cx: X(d.o), cy: y, r: 9, fill: C.sky }, svg);
+      el('circle', { cx: X(d.p), cy: y, r: 9, fill: C.flood }, svg);
+      const gap = (d.p - d.o).toFixed(1);
+      const mid = (X(d.o) + X(d.p)) / 2;
+      el('text', { x: gap > 2 ? mid : X(d.p) + 18, y: y - 16, 'text-anchor': gap > 2 ? 'middle' : 'start', style: 'fill:' + C.chalk + ';font-weight:600' }, svg, 'brecha ' + gap);
+      el('text', { x: X(d.o), y: y + 30, 'text-anchor': 'middle' }, svg, d.o.toFixed(1));
+      el('text', { x: X(d.p), y: y + 30, 'text-anchor': 'middle' }, svg, d.p.toFixed(1));
+    });
+  })();
+
+  /* ---------- Gráfico: roll-up del valor mediano ---------- */
+  (function () {
+    const svg = document.getElementById('c-roll');
+    const pts = [[2015, 375], [2018, 700], [2019, 700], [2020, 700], [2021, 950], [2023, 1000], [2024, 1000]];
+    const x0 = 56, x1 = 620, y0 = 290, y1 = 24;
+    const X = y => x0 + (y - 2015) / 9 * (x1 - x0), Y = v => y0 - v / 1100 * (y0 - y1);
+    [0, 250, 500, 750, 1000].forEach(v => {
+      el('line', { x1: x0, x2: x1, y1: Y(v), y2: Y(v), class: 'grid' }, svg);
+      el('text', { x: x0 - 10, y: Y(v) + 4, 'text-anchor': 'end' }, svg, v === 0 ? '0' : v >= 1000 ? '€1.0M' : '€' + v + 'K');
+    });
+    for (let yr = 2015; yr <= 2024; yr++) {
+      const has = pts.some(p => p[0] === yr);
+      el('text', { x: X(yr), y: y0 + 24, 'text-anchor': 'middle', style: has ? '' : 'fill:' + C.faint + ';opacity:.6' }, svg, "'" + String(yr).slice(2));
+    }
+    el('line', { x1: x0, x2: x1, y1: y0, y2: y0, class: 'axis' }, svg);
+    const d = pts.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join(' ');
+    const area = d + ' L' + X(2024) + ' ' + y0 + ' L' + X(2015) + ' ' + y0 + ' Z';
+    const defs = el('defs', {}, svg);
+    const grad = el('linearGradient', { id: 'gr-roll', x1: 0, x2: 0, y1: 0, y2: 1 }, defs);
+    el('stop', { offset: '0', 'stop-color': C.flood, 'stop-opacity': '.35' }, grad);
+    el('stop', { offset: '1', 'stop-color': C.flood, 'stop-opacity': '0' }, grad);
+    el('path', { d: area, fill: 'url(#gr-roll)' }, svg);
+    const line = el('path', { d: d, fill: 'none', stroke: C.flood, 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+    pts.forEach(p => el('circle', { cx: X(p[0]), cy: Y(p[1]), r: p[0] === 2015 || p[0] === 2024 ? 6 : 4, fill: C.flood, stroke: C.night, 'stroke-width': 2 }, svg));
+    el('text', { x: X(2015) + 10, y: Y(375) - 12, style: 'fill:' + C.chalk + ';font-weight:600' }, svg, '€375K');
+    el('text', { x: X(2024), y: Y(1000) - 14, 'text-anchor': 'end', style: 'fill:' + C.chalk + ';font-weight:600' }, svg, '€1.0M');
+    if (!reduce) {
+      const L = line.getTotalLength ? line.getTotalLength() : 0;
+      if (L) { line.style.strokeDasharray = L; line.style.strokeDashoffset = 0; }
+    }
+  })();
+
+  /* ---------- Modelos: anillos y clusters ---------- */
+  (function () {
+    const rings = [
+      { v: 0.904, label: 'R² 0.904', m: 'Valor de mercado', d: 'Regresión lineal sobre log(valor). RMSE 0.4164; sube a 0.933 con temporada, posición y región.' },
+      { v: 0.75, label: 'F1 0.75', m: 'Potencial mayor a 85', d: 'Random Forest, PR-AUC 0.82. La logística detecta el 97 %, pero con 20 % de precisión.' },
+      { v: 0.70, label: 'R² 0.70', m: 'Salario semanal', d: 'Con región, posición y temporada (0.60 sin ellas). Faltan el club y el contrato.' }];
+    const box = document.getElementById('rings');
+    rings.forEach((r, i) => {
+      const w = document.createElement('div'); w.className = 'ring';
+      const s = el('svg', { viewBox: '0 0 160 160', role: 'img', 'aria-label': r.m + ': ' + r.label });
+      const R = 64, L = 2 * Math.PI * R;
+      el('circle', { cx: 80, cy: 80, r: R, fill: 'none', stroke: C.panel, 'stroke-width': 12 }, s);
+      el('circle', { cx: 80, cy: 80, r: R, fill: 'none', stroke: i === 0 ? C.flood : C.sky, 'stroke-width': 12, 'stroke-dasharray': (L * r.v) + ' ' + L, transform: 'rotate(-90 80 80)', 'stroke-linecap': 'butt' }, s);
+      el('text', { x: 80, y: 88, 'text-anchor': 'middle', style: 'fill:' + C.chalk + ';font-family:Oswald, Arial Narrow, sans-serif;font-size:26px;font-weight:600' }, s, r.label);
+      w.appendChild(s);
+      const m = document.createElement('p'); m.className = 'm'; m.textContent = r.m; w.appendChild(m);
+      const d = document.createElement('p'); d.className = 'd'; d.textContent = r.d; w.appendChild(d);
+      box.appendChild(w);
+    });
+    const cl = [['Alto valor', 21.4, C.flood], ['Veteranos consolidados', 28.9, '#C9D6D2'], ['Promesas en desarrollo', 27.6, C.sky], ['Jugadores de base', 22.1, '#7F9893']];
+    const bar = document.getElementById('clusters'), leg = document.getElementById('cl-legend');
+    cl.forEach(c => {
+      const d = document.createElement('div'); d.style.flex = c[1]; d.style.background = c[2]; d.textContent = c[1] + '%'; bar.appendChild(d);
+      const l = document.createElement('div'); l.innerHTML = '<b></b>'; l.firstChild.textContent = c[1] + '%'; l.appendChild(document.createTextNode(c[0])); l.style.borderTop = '3px solid ' + c[2]; l.style.paddingTop = '6px'; leg.appendChild(l);
+    });
+  })();
+
+  /* ---------- Dashboards prescriptivos (mercado 2024 real, lógica de la Etapa 4) ---------- */
+  const hooks = {};
+  const $ = id => document.getElementById(id);
+  const P = window.Prescriptivo;
+  const MKT = (window.MERCADO && P) ? P.cargarMercado(window.MERCADO) : null;
+  const eur = v => (v == null || !isFinite(v)) ? '—' : Math.abs(v) >= 1e6 ? '€' + (v / 1e6).toFixed(1) + 'M' : Math.abs(v) >= 1e3 ? '€' + Math.round(v / 1e3) + 'K' : '€' + Math.round(v);
+  const POSC = { Portero: POS.POR, Defensa: POS.DEF, Mediocampista: POS.MED, Delantero: POS.DEL };
+  const NUM = ['Cero', 'Un', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez', 'Once'];
+  const fmtPot = v => String(Math.round(v * 10) / 10);
+  function debounce(fn, ms) { let t; return () => { clearTimeout(t); t = setTimeout(fn, ms); }; }
+  function kprow(id, items) {
+    const k = $(id); k.innerHTML = '';
+    items.forEach(([a, b]) => { const d = document.createElement('div'); d.innerHTML = '<span class="k"></span><span class="v"></span>'; d.children[0].textContent = a; d.children[1].textContent = b; k.appendChild(d); });
+  }
+  function showMsg(id, text) { const m = $(id); m.hidden = !text; m.textContent = text || ''; }
+  function wire(ids, render, outputs) {
+    const go = debounce(render, 120);
+    ids.forEach(id => { const e = $(id); e.addEventListener(e.type === 'range' ? 'input' : 'change', () => { outputs(); go(); }); });
+  }
+  function setVals(map) { for (const id in map) { const e = $(id); if (e.type === 'checkbox') e.checked = map[id]; else e.value = map[id]; } }
+  function fila(p, right) {
+    const d = document.createElement('div');
+    d.innerHTML = '<i></i><span><span class="nm"></span><br><small></small></span><span class="r"></span><span class="v"></span>';
+    d.querySelector('i').style.background = POSC[p.cat];
+    d.querySelector('.nm').textContent = p.name;
+    d.querySelector('small').textContent = p.club + ' · ' + p.pos + ' · ' + p.age + ' años' + (p.est ? ' · valor estimado' : '');
+    d.querySelector('.r').textContent = right;
+    d.querySelector('.v').textContent = eur(p.value);
+    return d;
+  }
+
+  if (!MKT) {
+    ['tf-msg', 'eq-msg', 'v-msg'].forEach(id => showMsg(id, 'No se pudieron cargar los datos del mercado 2024. Recargue la página.'));
+  } else {
+    /* ---- Dashboard 1: mercado de transferencias ---- */
+    const tfOut = () => {
+      $('tf-pres-o').textContent = '€' + $('tf-pres').value + 'M'; $('tf-n-o').textContent = $('tf-n').value;
+      $('tf-edad-o').textContent = $('tf-edad').value; $('tf-pot-o').textContent = $('tf-pot').value;
+    };
+    function tfRender() {
+      tfOut();
+      const o = { presupuesto: +$('tf-pres').value * 1e6, n: +$('tf-n').value, edadMenorA: +$('tf-edad').value, potencialMayorA: +$('tf-pot').value,
+                  referencia: $('tf-ref').value, objetivo: $('tf-obj').value, excluirEstimados: $('tf-est').checked };
+      const r = P.transferencias(MKT, o);
+      const f = r.fichajes, gasto = f.reduce((s, p) => s + p.value, 0);
+      const avg = k => f.length ? (f.reduce((s, p) => s + p[k], 0) / f.length).toFixed(1) : '—';
+      kprow('tf-kpis', [['Elegibles', r.grupo.length.toLocaleString('en-US')], ['Candidatos', r.candidatos.length.toLocaleString('en-US')],
+                        ['Costo', r.ok ? eur(gasto) : '—'], ['Potencial prom.', avg('pot')], ['Edad prom.', avg('age')]]);
+      showMsg('tf-msg', r.ok ? (r.exacto ? '' : 'La búsqueda es muy grande: se muestra la mejor combinación encontrada, que puede no ser la óptima.') : r.mensaje);
+      const t = $('tf-title');
+      if (r.ok) {
+        t.textContent = NUM[o.n] + (o.n === 1 ? ' fichaje por ' : ' fichajes por ');
+        const s = document.createElement('span'); s.className = 'hl'; s.textContent = eur(gasto); t.appendChild(s);
+      } else t.textContent = 'Sin fichajes posibles con estos valores';
+      const ro = $('roster'); ro.innerHTML = '';
+      f.forEach(p => ro.appendChild(fila(p, p.ovr + ' → ' + fmtPot(p.pot))));
+      $('tf-bar').style.width = (r.ok ? Math.min(100, gasto / o.presupuesto * 100) : 0) + '%';
+      $('tf-gasto').textContent = eur(gasto) + ' gastados';
+      $('tf-libre').textContent = eur(o.presupuesto - gasto) + ' libres de ' + eur(o.presupuesto);
+      $('tf-src').textContent = 'Mercado 2024: ' + MKT.length.toLocaleString('en-US') + ' jugadores · media de referencia ' + r.texto +
+        (isFinite(r.mediaRef) ? ' (' + eur(r.mediaRef) + ' por punto)' : '') + ' · programación entera exacta, como en la Etapa 4';
+      hooks.tf = r;
+      if (hooks.scatter) hooks.scatter(r);
+    }
+    wire(['tf-pres', 'tf-n', 'tf-edad', 'tf-pot', 'tf-ref', 'tf-obj', 'tf-est'], tfRender, tfOut);
+    $('tf-reset').addEventListener('click', () => { setVals({ 'tf-pres': 100, 'tf-n': 5, 'tf-edad': 25, 'tf-pot': 85, 'tf-ref': 'auto', 'tf-obj': 'potencial', 'tf-est': false }); tfRender(); });
+    tfRender();
+
+    /* ---- Dashboard 2: construcción de equipo ---- */
+    let eqShow = 'lp', eqLast = null;
+    const ORD = { Portero: 0, Defensa: 1, Mediocampista: 2, Delantero: 3 };
+    const eqOut = () => {
+      $('eq-pres-o').textContent = '€' + $('eq-pres').value + 'M';
+      $('eq-edad-o').textContent = +$('eq-edad').value >= 45 ? 'sin límite' : $('eq-edad').value + ' años';
+    };
+    function eqDraw() {
+      const r = eqLast; if (!r) return;
+      $('b-lp').setAttribute('aria-pressed', eqShow === 'lp'); $('b-gr').setAttribute('aria-pressed', eqShow === 'gr');
+      const team = r.equipos[eqShow === 'lp' ? 'lp' : 'greedy'] || null;
+      const ro = $('eq-roster'); ro.innerHTML = '';
+      (team || []).forEach(p => ro.appendChild(fila(p, 'OVR ' + p.ovr)));
+      if (hooks.pitch) hooks.pitch(team);
+    }
+    function eqRender() {
+      eqOut();
+      const o = { presupuesto: +$('eq-pres').value * 1e6, formacion: $('eq-form').value, edadMax: +$('eq-edad').value, excluirEstimados: $('eq-est').checked };
+      const r = P.equipo(MKT, o); eqLast = r;
+      ['greedy', 'lp'].forEach(k => { if (r.equipos[k]) r.equipos[k].sort((a, b) => (ORD[a.cat] - ORD[b.cat]) || (b.ovr - a.ovr)); });
+      showMsg('eq-msg', r.mensaje);
+      const cmp = $('eq-cmp'); cmp.innerHTML = '';
+      const g = r.equipos.greedy, l = r.equipos.lp;
+      const sum = (e, k) => e ? e.reduce((s, p) => s + p[k], 0) : NaN;
+      if (g || l) {
+        const rows = [['Rating total', e => sum(e, 'ovr'), v => v.toFixed(0), 'max'], ['Rating promedio', e => sum(e, 'ovr') / e.length, v => v.toFixed(2), 'max'],
+                      ['Costo', e => sum(e, 'value'), eur, 'min'], ['Presupuesto sin usar', e => o.presupuesto - sum(e, 'value'), eur, null],
+                      ['Edad promedio', e => sum(e, 'age') / e.length, v => v.toFixed(1), null]];
+        cmp.innerHTML = '<tr><th></th><th>Greedy</th><th>Prog. lineal</th></tr>';
+        rows.forEach(([name, fn, fmt, best]) => {
+          const vg = g ? fn(g) : NaN, vl = l ? fn(l) : NaN, tr = document.createElement('tr');
+          const td = (v, win) => { const c = document.createElement('td'); c.textContent = isFinite(v) ? fmt(v) : '—'; if (win) c.className = 'win'; return c; };
+          const h = document.createElement('td'); h.textContent = name; tr.appendChild(h);
+          tr.appendChild(td(vg, best === 'max' ? vg > vl : best === 'min' ? vg < vl : false));
+          tr.appendChild(td(vl, best === 'max' ? vl > vg : best === 'min' ? vl < vg : false));
+          cmp.appendChild(tr);
+        });
+        const dif = sum(l, 'ovr') - sum(g, 'ovr');
+        $('eq-title').textContent = (g && l) ? (dif > 0 ? 'Programación lineal: +' + dif + ' puntos sobre el greedy' : 'Greedy y programación lineal empatan en rating') : 'Construcción de equipo';
+      } else $('eq-title').textContent = 'Sin equipo posible con estos valores';
+      eqDraw();
+    }
+    wire(['eq-pres', 'eq-form', 'eq-edad', 'eq-est'], eqRender, eqOut);
+    $('b-lp').addEventListener('click', () => { eqShow = 'lp'; eqDraw(); });
+    $('b-gr').addEventListener('click', () => { eqShow = 'gr'; eqDraw(); });
+    $('eq-reset').addEventListener('click', () => { setVals({ 'eq-pres': 150, 'eq-form': '1-4-3-3', 'eq-edad': 45, 'eq-est': false }); eqShow = 'lp'; eqRender(); });
+    hooks.eqDraw = eqDraw;
+    eqRender();
+
+    /* ---- Dashboard 3: vender o no ---- */
+    const vOut = () => {
+      ['v-edad', 'v-ovr', 'v-pot', 'v-rov', 'v-red'].forEach(id => { $(id + '-o').textContent = $(id).value; });
+      $('v-vot-o').textContent = $('v-vot').value + ' de 3';
+      $('v-of').disabled = !$('v-use-of').checked; $('v-sal').disabled = !$('v-use-sal').checked;
+      $('v-of-o').textContent = '€' + (+$('v-of').value).toFixed(1) + 'M'; $('v-sal-o').textContent = '€' + $('v-sal').value + 'K';
+    };
+    function vDraw(r) {
+      const svg = $('c-step'); svg.innerHTML = '';
+      const xmax = Math.max(10, Math.ceil(Math.max(r.equilibrio * 2, r.valor * 1.25) / 1e6 / 5) * 5);
+      const x0 = 40, x1 = 585, y0 = 200, y1 = 26, X = v => x0 + Math.min(v, xmax) / xmax * (x1 - x0), Y = n => y0 - n / 3 * (y0 - y1);
+      const vm = r.votosMinimos;
+      el('rect', { x: x0, y: Y(3.2), width: x1 - x0, height: Y(vm - 0.5) - Y(3.2), fill: C.sell, opacity: 0.1 }, svg);
+      [0, 1, 2, 3].forEach(n => { el('line', { x1: x0, x2: x1, y1: Y(n), y2: Y(n), class: 'grid' }, svg); el('text', { x: x0 - 10, y: Y(n) + 4, 'text-anchor': 'end' }, svg, n); });
+      for (let i = 0; i <= 5; i++) { const v = xmax / 5 * i; el('text', { x: X(v), y: y0 + 22, 'text-anchor': 'middle' }, svg, '€' + Math.round(v) + 'M'); }
+      el('text', { x: 6, y: 12, style: 'fill:' + C.faint }, svg, 'criterios a favor de vender según la oferta');
+      el('text', { x: x1, y: Y(3.2) + 14, 'text-anchor': 'end', style: 'fill:' + C.sell }, svg, 'zona de venta');
+      const base = (r.criterios[1] ? 1 : 0) + (r.criterios[2] ? 1 : 0), eqM = r.equilibrio / 1e6;
+      el('path', { d: 'M' + X(0) + ' ' + Y(base) + ' L' + X(eqM) + ' ' + Y(base) + ' L' + X(eqM) + ' ' + Y(base + 1) + ' L' + X(xmax) + ' ' + Y(base + 1), fill: 'none', stroke: C.chalk, 'stroke-width': 3 }, svg);
+      el('line', { x1: X(eqM), x2: X(eqM), y1: y1, y2: y0, stroke: C.flood, 'stroke-dasharray': '5 5', 'stroke-width': 1.5 }, svg);
+      el('text', { x: X(eqM) + 6, y: Y(0.2), style: 'fill:' + C.flood }, svg, 'equilibrio ' + eur(r.equilibrio));
+      const vals = r.cercanos.map(p => p.value).sort((a, b) => a - b);
+      const q = p => { const pos = (vals.length - 1) * p, lo = Math.floor(pos), hi = Math.ceil(pos); return vals[lo] + (vals[hi] - vals[lo]) * (pos - lo); };
+      [[0.25, 'P25'], [0.5, 'Med'], [0.75, 'P75']].forEach(([p, t]) => {
+        const v = q(p) / 1e6; if (v > xmax) return;
+        el('line', { x1: X(v), x2: X(v), y1: y0, y2: y0 + 6, stroke: C.muted }, svg);
+        el('text', { x: X(v), y: y0 + 40, 'text-anchor': 'middle', style: 'fill:' + C.faint + ';font-size:10px' }, svg, t);
+      });
+      el('text', { x: x0, y: y0 + 60, style: 'fill:' + C.faint + ';font-size:10px' }, svg, 'P25 · Med · P75 = valor de mercado de los perfiles más cercanos');
+      el('circle', { cx: X(r.valor / 1e6), cy: Y(r.votos), r: 9, fill: r.decision === 'VENDER' ? C.sell : C.keep, stroke: C.night, 'stroke-width': 3 }, svg);
+    }
+    function vRender() {
+      vOut();
+      const o = { edad: +$('v-edad').value, overall: +$('v-ovr').value, potencial: +$('v-pot').value,
+                  oferta: $('v-use-of').checked ? +$('v-of').value * 1e6 : null, salario: $('v-use-sal').checked ? +$('v-sal').value * 1e3 : null,
+                  rangoOverall: +$('v-rov').value, rangoEdad: +$('v-red').value, votosMinimos: +$('v-vot').value };
+      $('v-title').textContent = o.edad + ' años, overall ' + o.overall + ', potencial ' + o.potencial;
+      if (o.potencial < o.overall) { showMsg('v-msg', 'El potencial no puede ser menor que el overall: en FIFA el potencial es el techo del jugador.'); return; }
+      const r = P.venta(MKT, o);
+      if (!r.ok) { showMsg('v-msg', r.mensaje); return; }
+      showMsg('v-msg', '');
+      r.votosMinimos = o.votosMinimos;
+      if (!$('v-use-of').checked) $('v-of-o').textContent = eur(r.valorSupuesto) + ' (supuesto)';
+      if (!$('v-use-sal').checked) $('v-sal-o').textContent = eur(r.salarioSupuesto) + ' (supuesto)';
+      const sell = r.decision === 'VENDER';
+      $('verdict').className = 'verdict ' + (sell ? 'sell' : 'keep');
+      $('v-word').textContent = sell ? 'Vender' : 'Retener';
+      $('v-desc').textContent = r.votos + ' de 3 criterios a favor de vender (se piden ' + o.votosMinimos + '). El criterio de valor cambia a vender con ofertas desde ' + eur(r.equilibrio) + '.';
+      const crit = $('crit'); crit.innerHTML = '';
+      [['Valor por rating', eur(r.valor / o.overall) + ' vs ' + eur(r.medVpr), r.criterios[0]],
+       ['Brecha de potencial', r.brecha + ' vs ' + (Math.round(r.medBrecha * 10) / 10), r.criterios[1]],
+       ['Salario semanal', eur(r.salario) + ' vs ' + eur(r.medSal), r.criterios[2]]].forEach(x => {
+        const d = document.createElement('div'); d.innerHTML = '<span></span><span class="val"></span><span class="chip"></span>';
+        d.children[0].textContent = x[0]; d.children[1].textContent = x[1];
+        d.children[2].textContent = x[2] ? 'Vender' : 'Retener'; d.children[2].className = 'chip ' + (x[2] ? 'sell' : 'keep');
+        crit.appendChild(d);
+      });
+      $('v-src').textContent = 'Medianas de ' + r.similares.length + ' jugadores parecidos del mercado 2024 (overall ' + (o.overall - o.rangoOverall) + '-' + (o.overall + o.rangoOverall) +
+        ', ' + (o.edad - o.rangoEdad) + '-' + (o.edad + o.rangoEdad) + ' años) · mismos criterios de la Etapa 4';
+      vDraw(r);
+    }
+    wire(['v-edad', 'v-ovr', 'v-pot', 'v-use-of', 'v-of', 'v-use-sal', 'v-sal', 'v-rov', 'v-red', 'v-vot'], vRender, vOut);
+    $('v-reset').addEventListener('click', () => { setVals({ 'v-edad': 28, 'v-ovr': 82, 'v-pot': 83, 'v-use-of': false, 'v-of': 16.2, 'v-use-sal': false, 'v-sal': 67, 'v-rov': 2, 'v-red': 2, 'v-vot': 2 }); vRender(); });
+    vRender();
+  }
+
+  /* ---------- Escenas 3D ---------- */
+  if (!window.THREE) {
+    document.querySelectorAll('.stage3d').forEach(s => {
+      if (s.id === 's-hero') return;
+      const n = document.createElement('div'); n.className = 'no3d';
+      n.textContent = 'No se pudo cargar el motor 3D. Recargue la página con conexión a internet.';
+      s.appendChild(n);
+    });
+    return;
+  }
+  const scenes = [];
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  function stage(id, cam, target, opts) {
+    opts = opts || {};
+    const host = document.getElementById(id);
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); }
+    catch (e) { const n = document.createElement('div'); n.className = 'no3d'; n.textContent = 'Este navegador no puede mostrar gráficos 3D (WebGL).'; host.appendChild(n); return null; }
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    host.insertBefore(renderer.domElement, host.firstChild);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(opts.fov || 38, 1, 0.1, 300);
+    camera.position.copy(cam);
+    let controls = null;
+    if (THREE.OrbitControls && !opts.static) {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.copy(target);
+      controls.enableDamping = true; controls.dampingFactor = 0.08;
+      controls.enableZoom = false; controls.enablePan = false;
+      controls.minPolarAngle = 0.25; controls.maxPolarAngle = Math.PI / 2.05;
+      controls.autoRotate = !reduce; controls.autoRotateSpeed = opts.spin || 0.5;
+      controls.enabled = !coarse;
+      renderer.domElement.style.touchAction = 'pan-y';
+      controls.update();
+    } else { camera.lookAt(target); }
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const sun = new THREE.DirectionalLight(0xfff2dd, 0.9); sun.position.set(6, 14, 8); scene.add(sun);
+    const rim = new THREE.DirectionalLight(0x9fd8ee, 0.35); rim.position.set(-8, 6, -10); scene.add(rim);
+    const s = { host, renderer, scene, camera, controls, labels: [], visible: false, update: null };
+    function resize() {
+      const w = host.clientWidth, h = host.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(host); resize();
+    new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; }, { rootMargin: '100px' }).observe(host);
+    scenes.push(s);
+    return s;
+  }
+  function label(s, html, pos, cls) {
+    const d = document.createElement('div'); d.className = 'lbl' + (cls ? ' ' + cls : ''); d.innerHTML = html;
+    s.host.appendChild(d);
+    const L = { el: d, pos: typeof pos === 'function' ? pos : () => pos, hidden: false };
+    s.labels.push(L);
+    return L;
+  }
+  const tmp = new THREE.Vector3();
+  function loop(t) {
+    const sec = t / 1000;
+    for (const s of scenes) {
+      if (!s.visible) continue;
+      if (s.update) s.update(sec);
+      if (s.controls) s.controls.update();
+      s.renderer.render(s.scene, s.camera);
+      const w = s.host.clientWidth, h = s.host.clientHeight;
+      for (const L of s.labels) {
+        tmp.copy(L.pos()).project(s.camera);
+        const off = L.hidden || tmp.z > 1;
+        L.el.style.opacity = off ? 0 : 1;
+        L.el.style.transform = 'translate(' + ((tmp.x + 1) / 2 * w).toFixed(1) + 'px,' + ((1 - tmp.y) / 2 * h).toFixed(1) + 'px) translate(-50%,-100%)';
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  const col = c => new THREE.Color(c);
+  function lineMat(c, o) { return new THREE.LineBasicMaterial({ color: col(c), transparent: true, opacity: o }); }
+
+  /* Líneas reglamentarias de una cancha de 105 × 68 m (escala 0.2) */
+  function pitchLines(y) {
+    const L = 21, W = 13.6, h = L / 2, w = W / 2, p = [];
+    const seg = (a, b, c, d) => p.push(a, y, b, c, y, d);
+    seg(-h, -w, h, -w); seg(h, -w, h, w); seg(h, w, -h, w); seg(-h, w, -h, -w); seg(0, -w, 0, w);
+    [[-1], [1]].forEach(([sg]) => {
+      const bx = h - 3.3, gx = h - 1.1, bw = 4.03, gw = 1.83;
+      seg(sg * h, -bw, sg * bx, -bw); seg(sg * bx, -bw, sg * bx, bw); seg(sg * bx, bw, sg * h, bw);
+      seg(sg * h, -gw, sg * gx, -gw); seg(sg * gx, -gw, sg * gx, gw); seg(sg * gx, gw, sg * h, gw);
+    });
+    for (let i = 0; i < 64; i++) {
+      const a = i / 64 * Math.PI * 2, b = (i + 1) / 64 * Math.PI * 2;
+      seg(Math.cos(a) * 1.83, Math.sin(a) * 1.83, Math.cos(b) * 1.83, Math.sin(b) * 1.83);
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
+    return g;
+  }
+
+  /* Portada: una cancha de partículas que ondula */
+  (function () {
+    const s = stage('s-hero', V(0, 7.5, 14), V(0, 0, 1.5), { fov: 42, static: true });
+    if (!s) return;
+    const grp = new THREE.Group(); s.scene.add(grp);
+    const nx = 150, nz = 96, pos = new Float32Array((nx + 1) * (nz + 1) * 3), colors = new Float32Array(pos.length);
+    const ca = col(C.sky), cb = col(C.flood), cc = new THREE.Color();
+    let k = 0;
+    for (let i = 0; i <= nx; i++) for (let j = 0; j <= nz; j++) {
+      const x = -13 + 26 * i / nx, z = -8.5 + 17 * j / nz;
+      pos[k] = x; pos[k + 1] = 0; pos[k + 2] = z;
+      cc.copy(ca).lerp(cb, Math.max(0, Math.min(1, (x + 13) / 26 * 0.9 - 0.15)));
+      colors[k] = cc.r; colors[k + 1] = cc.g; colors[k + 2] = cc.b; k += 3;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    grp.add(new THREE.Points(g, new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.85 })));
+    const lines = new THREE.LineSegments(pitchLines(0.02), lineMat(C.chalk, 0.4)); grp.add(lines);
+    function wave(t) {
+      for (let i = 0; i < pos.length; i += 3) {
+        const x = pos[i], z = pos[i + 2];
+        pos[i + 1] = 0.28 * Math.sin(x * 0.42 + t * 1.1) * Math.cos(z * 0.5 - t * 0.8) + 0.12 * Math.sin((x + z) * 0.9 + t * 1.7);
+      }
+      g.attributes.position.needsUpdate = true;
+    }
+    wave(0);
+    s.update = t => { if (reduce) return; wave(t); grp.rotation.y = Math.sin(t * 0.08) * 0.35; };
+  })();
+
+  /* Valor por región / liga: torres */
+  (function () {
+    const s = stage('s-towers', V(9, 9, 17), V(0, 3.4, 0), { spin: 0.45 });
+    if (!s) return;
+    const grid = new THREE.GridHelper(22, 22, col(C.faint), col(C.faint));
+    grid.material.transparent = true; grid.material.opacity = 0.25; s.scene.add(grid);
+    const SETS = {
+      reg: { max: 345100, items: [['Europa', 345100], ['América del Sur', 27104], ['América del Norte', 16837], ['Otras regiones', 18266]],
+             text: 'Suma del valor de mercado de todas las temporadas: Europa reúne €345,100M de un total de €407,307M. Las demás regiones juntas no llegan a la quinta parte de la torre europea.' },
+      lig: { max: 63061, items: [['Premier League', 63061], ['La Liga', 53521], ['Serie A', 39884], ['Bundesliga', 39268], ['Ligue 1', 28889]],
+             text: 'Al bajar un nivel, las cinco ligas de mayor valor son europeas. La Premier League lidera con €63,061M, más del doble que la Ligue 1, quinta.' } };
+    const bars = [], H = 8;
+    for (let i = 0; i < 5; i++) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 1.5), new THREE.MeshStandardMaterial({ color: col(C.sky), roughness: 0.45, metalness: 0.15 }));
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), lineMat(C.chalk, 0.25));
+      m.add(edges);
+      m.scale.y = 0.001; s.scene.add(m);
+      const b = { m, h: 0.001, target: 0.001, name: '', val: 0 };
+      b.lbl = label(s, '', () => V(m.position.x, b.h + 0.35, m.position.z), 'big');
+      bars.push(b);
+    }
+    function setData(key) {
+      const set = SETS[key], n = set.items.length;
+      bars.forEach((b, i) => {
+        const it = set.items[i];
+        b.m.position.x = (i - (n - 1) / 2) * 2.6;
+        if (!it) { b.target = 0.001; b.lbl.hidden = true; return; }
+        b.target = Math.max(0.06, it[1] / set.max * H);
+        b.m.material.color = col(i === 0 ? C.flood : C.sky);
+        b.lbl.hidden = false;
+        b.lbl.el.innerHTML = '€' + (it[1] / 1000).toFixed(1) + 'B<small></small>';
+        b.lbl.el.querySelector('small').textContent = it[0];
+      });
+      document.getElementById('valor-text').textContent = set.text;
+      document.getElementById('b-reg').setAttribute('aria-pressed', key === 'reg');
+      document.getElementById('b-lig').setAttribute('aria-pressed', key === 'lig');
+      if (reduce) bars.forEach(b => { b.h = b.target; b.m.scale.y = b.h; b.m.position.y = b.h / 2; });
+    }
+    s.update = () => bars.forEach(b => {
+      b.h += (b.target - b.h) * 0.08;
+      b.m.scale.y = b.h; b.m.position.y = b.h / 2; b.m.visible = b.h > 0.01;
+    });
+    document.getElementById('b-reg').addEventListener('click', () => setData('reg'));
+    document.getElementById('b-lig').addEventListener('click', () => setData('lig'));
+    setData('reg');
+  })();
+
+  function clearLabels(s, tag) {
+    s.labels = s.labels.filter(L => { if (L.tag === tag) { L.el.remove(); return false; } return true; });
+  }
+  function dispose(grp) {
+    grp.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+  }
+  function niceTicks(a, b, n) {
+    const span = b - a || 1, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0))), err = step0 / mag;
+    const step = (err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1) * mag, out = [];
+    for (let v = Math.ceil(a / step) * step; v <= b + 1e-9; v += step) out.push(+v.toFixed(6));
+    return out;
+  }
+
+  /* Dashboard 1: candidatos (gris) y fichajes (color) en el espacio overall × potencial × valor */
+  (function () {
+    const s = stage('s-scatter', V(10, 7, 12), V(0, 2.2, 0), { spin: 0.4 });
+    if (!s) return;
+    const grid = new THREE.GridHelper(8, 8, col(C.faint), col(C.faint));
+    grid.material.transparent = true; grid.material.opacity = 0.3; grid.scale.z = 6 / 8; s.scene.add(grid);
+    const ag = new THREE.BufferGeometry();
+    ag.setAttribute('position', new THREE.Float32BufferAttribute([-4, 0, 3, 4, 0, 3, -4, 0, 3, -4, 5, 3, -4, 0, 3, -4, 0, -3], 3));
+    s.scene.add(new THREE.LineSegments(ag, lineMat(C.chalk, 0.55)));
+    label(s, 'overall →', V(4.4, 0.35, 3), 'axis');
+    label(s, 'potencial ↑', V(-4, 5.6, 3), 'axis');
+    label(s, 'valor →', V(-4.4, 0.35, -3.4), 'axis');
+    let grp = null;
+    const balls = [];
+    function draw(r) {
+      if (grp) { s.scene.remove(grp); dispose(grp); }
+      clearLabels(s, 'dyn'); balls.length = 0;
+      grp = new THREE.Group(); s.scene.add(grp);
+      const all = r.candidatos.length ? r.candidatos : r.grupo;
+      if (!all.length) return;
+      const ext = k => { let a = Infinity, b = -Infinity; all.forEach(p => { a = Math.min(a, p[k]); b = Math.max(b, p[k]); }); return [a, b]; };
+      let [o0, o1] = ext('ovr'), [p0, p1] = ext('pot'), [, v1] = ext('value');
+      if (o1 - o0 < 4) { o0 -= 2; o1 += 2; }
+      if (p1 - p0 < 2) { p0 -= 1; p1 += 1; }
+      v1 = v1 || 1;
+      const X = o => (o - o0) / (o1 - o0) * 8 - 4, Y = p => (p - p0) / (p1 - p0) * 5, Z = v => 3 - v / v1 * 6;
+      const tag = (html, pos, cls) => { const L = label(s, html, pos, cls); L.tag = 'dyn'; return L; };
+      const chosen = new Set(r.fichajes.map(p => p.id));
+      const rest = all.filter(p => !chosen.has(p.id)).slice(0, 6000), arr = new Float32Array(rest.length * 3);
+      rest.forEach((p, i) => { arr[i * 3] = X(p.ovr); arr[i * 3 + 1] = Y(p.pot); arr[i * 3 + 2] = Z(p.value); });
+      const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      grp.add(new THREE.Points(pg, new THREE.PointsMaterial({ size: rest.length > 800 ? 0.07 : 0.14, color: col(C.muted), transparent: true, opacity: 0.55 })));
+      niceTicks(o0, o1, 4).forEach(v => tag(String(v), V(X(v), -0.05, 3.5), 'axis'));
+      niceTicks(p0, p1, 4).forEach(v => tag(String(v), V(-4.4, Y(v) + 0.1, 3), 'axis'));
+      niceTicks(0, v1 / 1e6, 3).forEach(v => tag('€' + v + 'M', V(-4.5, -0.05, Z(v * 1e6)), 'axis'));
+      r.fichajes.forEach((p, i) => {
+        const x = X(p.ovr), y = Y(p.pot), z = Z(p.value), c = POSC[p.cat];
+        const m = new THREE.Mesh(new THREE.SphereGeometry(0.3, 28, 18), new THREE.MeshStandardMaterial({ color: col(c), roughness: 0.35, emissive: col(c), emissiveIntensity: 0.25 }));
+        m.position.set(x, y, z); grp.add(m);
+        const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute([x, 0, z, x, y, z], 3));
+        grp.add(new THREE.LineSegments(sg, lineMat(c, 0.6)));
+        const L = tag('', () => V(x, m.position.y + 0.42, z)); L.el.textContent = p.name.split(' ').slice(-1)[0];
+        balls.push({ m, y, ph: i });
+      });
+    }
+    s.update = t => { if (!reduce) balls.forEach(b => { b.m.position.y = b.y + Math.sin(t * 1.4 + b.ph) * 0.05; }); };
+    hooks.scatter = draw;
+    if (hooks.tf) draw(hooks.tf);
+  })();
+
+  /* Dashboard 2: el equipo en una cancha 3D; la altura de cada columna es el overall del jugador */
+  (function () {
+    const s = stage('s-pitch', V(-12, 11, 13), V(0, 1.5, 0), { spin: 0.3 });
+    if (!s) return;
+    for (let i = 0; i < 10; i++) {
+      const strip = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 13.6), new THREE.MeshStandardMaterial({ color: col(i % 2 ? C.grass : C.grass2), roughness: 0.95 }));
+      strip.rotation.x = -Math.PI / 2; strip.position.set(-10.5 + 1.05 + i * 2.1, 0, 0); s.scene.add(strip);
+    }
+    s.scene.add(new THREE.LineSegments(pitchLines(0.015), lineMat(C.chalk, 0.75)));
+    const LX = { Portero: -9.2, Defensa: -5.4, Mediocampista: -1.4, Delantero: 3.2 };
+    const ABR = { Portero: 'POR', Defensa: 'DEF', Mediocampista: 'MED', Delantero: 'DEL' };
+    const lo = col(C.sky), hi = col(C.flood);
+    const lineLbl = {};
+    Object.keys(LX).forEach(c => { lineLbl[c] = label(s, '', V(LX[c], 0.05, 7.6), 'big'); });
+    let grp = null, players = [];
+    function draw(team) {
+      if (grp) { s.scene.remove(grp); dispose(grp); }
+      clearLabels(s, 'dyn'); players = [];
+      grp = new THREE.Group(); s.scene.add(grp);
+      Object.keys(LX).forEach(cat => {
+        const line = team ? team.filter(p => p.cat === cat) : [], n = line.length, L = lineLbl[cat];
+        L.hidden = !n;
+        if (n) L.el.innerHTML = (line.reduce((a, p) => a + p.ovr, 0) / n).toFixed(1) + '<small>' + ABR[cat] + ' · promedio</small>';
+        line.forEach((p, k) => {
+          const z = -5.6 + 11.2 * (k + 1) / (n + 1), target = p.ovr / 100 * 6;
+          const color = lo.clone().lerp(hi, Math.max(0, Math.min(1, (p.ovr - 64) / 24)));
+          const m = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 1, 28), new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.1 }));
+          m.position.set(LX[cat], 0.01, z); m.scale.y = 0.01; grp.add(m);
+          const cap = new THREE.Mesh(new THREE.CircleGeometry(0.4, 28), new THREE.MeshBasicMaterial({ color: col(C.chalk) }));
+          cap.rotation.x = -Math.PI / 2; grp.add(cap);
+          const pl = { m, cap, h: reduce ? target : 0.01, target };
+          const Lb = label(s, '', () => V(m.position.x, pl.h + 0.25, z)); Lb.tag = 'dyn';
+          Lb.el.innerHTML = '<span></span><small></small>';
+          Lb.el.children[0].textContent = p.name.split(' ').slice(-1)[0];
+          Lb.el.children[1].textContent = String(p.ovr);
+          players.push(pl);
+        });
+      });
+    }
+    s.update = () => players.forEach(p => {
+      p.h += (p.target - p.h) * 0.08;
+      p.m.scale.y = p.h; p.m.position.y = p.h / 2; p.cap.position.set(p.m.position.x, p.h + 0.002, p.m.position.z);
+    });
+    hooks.pitch = draw;
+    if (hooks.eqDraw) hooks.eqDraw();
+  })();
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
