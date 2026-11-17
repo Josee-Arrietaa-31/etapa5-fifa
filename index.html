@@ -327,27 +327,10 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   </div>
 </section>
 
-<!-- 2 · Inventario de preguntas -->
-<section class="slide alt" id="inventario" data-name="Inventario">
-  <div class="wrap">
-    <p class="kicker">02 <b>Etapa 5 · Inventario de preguntas</b></p>
-    <h2>34 preguntas, cada una con su forma</h2>
-    <p class="lead">Se recorrieron las cuatro etapas anteriores y cada pregunta de negocio recibió una representación con una regla fija: <b>tabla</b> cuando importan los nombres o los valores exactos, <b>gráfico</b> cuando importa una comparación, una forma o una tendencia, y <b>dashboard</b> cuando el usuario cambia los datos de entrada.</p>
-    <div class="invsum" id="inv-sum" role="img" aria-label="Representación elegida por etapa"></div>
-    <div class="invbar">
-      <input type="search" id="inv-q" placeholder="Buscar una pregunta…" aria-label="Buscar una pregunta">
-      <div class="chips" id="inv-etapa" role="group" aria-label="Filtrar por etapa"></div>
-      <div class="chips" id="inv-rep" role="group" aria-label="Filtrar por representación"></div>
-    </div>
-    <div class="invlist" id="inv-list"></div>
-    <p class="source" id="inv-src">Toque una pregunta para ver su respuesta, la representación elegida y por qué · Paso 2 del notebook</p>
-  </div>
-</section>
-
 <!-- 2 · Datos -->
 <section class="slide alt" id="datos" data-name="Datos">
   <div class="wrap">
-    <p class="kicker">03 <b>Etapa 1 · Calidad</b></p>
+    <p class="kicker">02 <b>Etapa 1 · Calidad</b></p>
     <h2>Una base confiable, con lo dudoso marcado</h2>
     <p class="lead">Se usó la última actualización de cada edición de FIFA, que incluye las transferencias de toda la temporada. Los registros dudosos se marcaron con tres features de seguridad en lugar de borrarse.</p>
     <div class="stats reveal">
@@ -365,7 +348,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   <div class="wrap">
     <div class="split">
       <div class="col">
-        <p class="kicker">04 <b>Etapa 2 · Modelo dimensional</b></p>
+        <p class="kicker">03 <b>Etapa 2 · Modelo dimensional</b></p>
         <h2>Europa concentra el <span class="hl">84.7 %</span> del valor</h2>
         <p class="lead" id="valor-text">Suma del valor de mercado de todas las temporadas: Europa reúne €345,100M de un total de €407,307M. Las demás regiones juntas no llegan a la quinta parte de la torre europea.</p>
         <div class="seg" role="group" aria-label="Nivel del drill-down">
@@ -384,7 +367,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   <div class="wrap">
     <div class="split">
       <div class="col">
-        <p class="kicker">05 <b>Etapa 3 · Descriptivo</b></p>
+        <p class="kicker">04 <b>Etapa 3 · Descriptivo</b></p>
         <h2>La edad decide el margen de crecimiento</h2>
         <p class="lead">Los jóvenes tienen 13 puntos entre su nivel actual y su techo; los veteranos ya llegaron. El valor mediano alcanza su máximo en la etapa Prime, donde se juntan nivel y margen.</p>
         <div class="legend"><span><i style="background:var(--sky)"></i>Overall promedio</span><span><i style="background:var(--flood)"></i>Potencial promedio</span></div>
@@ -398,7 +381,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 5 · Mercado -->
 <section class="slide" id="mercado" data-name="Mercado">
   <div class="wrap">
-    <p class="kicker">06 <b>Cubo de BI · roll-up por temporada</b></p>
+    <p class="kicker">05 <b>Cubo de BI · roll-up por temporada</b></p>
     <h2>El precio casi se triplicó; el nivel, no</h2>
     <div class="split">
       <div class="col">
@@ -417,7 +400,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 7 · Modelos predictivos -->
 <section class="slide alt" id="modelos" data-name="Modelos">
   <div class="wrap">
-    <p class="kicker">07 <b>Etapa 4 · Predictivo</b></p>
+    <p class="kicker">06 <b>Etapa 4 · Predictivo</b></p>
     <h2>El valor se predice bien; el salario, no tanto</h2>
     <div class="rings reveal" id="rings"></div>
     <div class="seg" role="group" aria-label="Modelo que se muestra">
@@ -442,7 +425,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   <div class="wrap">
     <div class="split">
       <div class="col">
-        <p class="kicker">08 <b>Etapa 4 · K-Means (k = 4)</b></p>
+        <p class="kicker">07 <b>Etapa 4 · K-Means (k = 4)</b></p>
         <h2>Cuatro tipos de jugador</h2>
         <p class="lead">K-Means agrupó a los jugadores por edad, potencial, valor y salario, sin conocer las etiquetas; los nombres se pusieron después, mirando el perfil de cada grupo. Para verlos en 3D se usó PCA: tres componentes que resumen el 97 % de la variación de las cuatro variables.</p>
         <div class="clusters" id="clusters" role="img" aria-label="Tamaño de los cuatro clusters de jugadores"></div>
@@ -456,7 +439,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 9 · Valores de entrada de los dashboards -->
 <section class="slide alt" id="entradas" data-name="Entradas">
   <div class="wrap">
-    <p class="kicker">09 <b>Etapa 5 · Valores de entrada</b></p>
+    <p class="kicker">08 <b>Etapa 5 · Valores de entrada</b></p>
     <h2>¿Qué puede cambiar el usuario?</h2>
     <p class="lead">Para cada experimento prescriptivo se separaron los valores que un club querría cambiar de los que son parte del método. El criterio: <b>es una entrada</b> si responde a una situación distinta del club (otro presupuesto, otra formación, otra oferta); <b>no lo es</b> si cambiarlo rompe la lógica del modelo, como las columnas que se usan o el solver.</p>
     <div class="ingrid">
@@ -506,7 +489,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 7 · Dashboard: mercado de transferencias (3D) -->
 <section class="slide" id="fichajes" data-name="Fichajes">
   <div class="wrap">
-    <p class="kicker">10 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
+    <p class="kicker">09 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
     <h2 id="tf-title">Cinco promesas por <span class="hl">€41.0M</span></h2>
     <div class="dash">
       <div class="ctrl">
@@ -536,7 +519,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 8 · Dashboard: construcción de equipo (3D) -->
 <section class="slide alt" id="equipo" data-name="Equipo">
   <div class="wrap">
-    <p class="kicker">11 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
+    <p class="kicker">10 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
     <h2 id="eq-title">Greedy contra programación lineal</h2>
     <div class="dash">
       <div class="ctrl">
@@ -566,7 +549,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 9 · Dashboard: vender o no -->
 <section class="slide" id="venta" data-name="Venta">
   <div class="wrap">
-    <p class="kicker">12 <b>Dashboard · ¿Vender o retener?</b></p>
+    <p class="kicker">11 <b>Dashboard · ¿Vender o retener?</b></p>
     <h2 id="v-title">28 años, overall 82, potencial 83</h2>
     <div class="dash">
       <div class="ctrl">
@@ -596,7 +579,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 10 · Cierre -->
 <section class="slide alt" id="cierre" data-name="Cierre">
   <div class="wrap">
-    <p class="kicker">13 <b>Conclusiones</b></p>
+    <p class="kicker">12 <b>Conclusiones</b></p>
     <h2>Lo que deja el proyecto</h2>
     <div class="closing">
       <ol class="takeaways">
@@ -618,7 +601,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 13 · Anexo: explorar los datos -->
 <section class="slide" id="explorar" data-name="Explorar">
   <div class="wrap">
-    <p class="kicker">14 <b>Anexo · Explorar los datos</b></p>
+    <p class="kicker">13 <b>Anexo · Explorar los datos</b></p>
     <h2>Para las preguntas del jurado</h2>
     <p class="lead">Distribuciones, rankings y anomalías de la Etapa 3, calculados sobre el dataset completo de 175,872 registros.</p>
     <div class="seg" role="group" aria-label="Qué explorar">
@@ -1014,60 +997,6 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   function segToggle(ids, onChange) {
     ids.forEach(([btn, key]) => $(btn).addEventListener('click', () => { ids.forEach(([b, k]) => $(b).setAttribute('aria-pressed', k === key)); onChange(key); }));
   }
-
-  /* Inventario de preguntas */
-  if (X) (function () {
-    const inv = X.inventario;
-    const ETAPAS = ['Todas', 'Etapa 1', 'Etapa 2', 'Etapa 3', 'Etapa 4'], REPS = ['Todas', 'Tabla', 'Gráfico', 'Tabla + gráfico', 'Dashboard'];
-    const REPC = { 'Tabla': '#C9D6D2', 'Gráfico': C.sky, 'Tabla + gráfico': '#B79CF2', 'Dashboard': C.flood };
-    let fe = 'Todas', fr = 'Todas', q = '';
-    // Resumen: barras apiladas por etapa
-    const sum = $('inv-sum');
-    ETAPAS.slice(1).forEach(et => {
-      const lab = document.createElement('span'); lab.textContent = et; sum.appendChild(lab);
-      const bar = document.createElement('div'); bar.className = 'bar';
-      REPS.slice(1).forEach(rp => {
-        const n = inv.filter(p => p.Etapa === et && p['Representación'] === rp).length;
-        if (!n) return;
-        const s = document.createElement('span'); s.style.flex = n; s.style.background = REPC[rp]; s.textContent = n; s.title = rp + ': ' + n;
-        bar.appendChild(s);
-      });
-      bar.style.width = (inv.filter(p => p.Etapa === et).length / 15 * 100) + '%';
-      sum.appendChild(bar);
-    });
-    const leyenda = document.createElement('span'); sum.appendChild(leyenda);
-    const lg = document.createElement('div'); lg.className = 'legend';
-    REPS.slice(1).forEach(rp => { const s = document.createElement('span'); s.innerHTML = '<i></i>'; s.firstChild.style.background = REPC[rp]; s.appendChild(document.createTextNode(rp)); lg.appendChild(s); });
-    sum.appendChild(lg);
-    function chips(id, opts, get, set) {
-      const box = $(id); box.innerHTML = '';
-      opts.forEach(o => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o; b.setAttribute('aria-pressed', get() === o); b.addEventListener('click', () => { set(o); render(); }); box.appendChild(b); });
-    }
-    function render() {
-      chips('inv-etapa', ETAPAS, () => fe, v => { fe = v; });
-      chips('inv-rep', REPS, () => fr, v => { fr = v; });
-      const t = q.trim().toLowerCase();
-      const rows = inv.filter(p => (fe === 'Todas' || p.Etapa === fe) && (fr === 'Todas' || p['Representación'] === fr) &&
-        (!t || (p.Pregunta + ' ' + p['Respuesta (resumen)'] + ' ' + p['Sección']).toLowerCase().includes(t)));
-      const list = $('inv-list'); list.innerHTML = '';
-      rows.forEach(p => {
-        const d = document.createElement('details'); d.className = 'inv';
-        d.innerHTML = '<summary><span class="et"></span><span class="pq"></span><span class="rp"></span></summary><div class="det"><p><b>Respuesta:</b> <span class="a"></span></p><p><b>Representación:</b> <span class="v"></span> · <b>Dónde:</b> <span class="w"></span></p><p><b>Por qué:</b> <span class="y"></span></p></div>';
-        d.querySelector('.et').textContent = p.Etapa.replace('Etapa ', 'E');
-        d.querySelector('.pq').textContent = p.Pregunta;
-        const rp = d.querySelector('.rp'); rp.textContent = p['Representación']; rp.style.setProperty('--c', REPC[p['Representación']]);
-        d.querySelector('.a').textContent = p['Respuesta (resumen)'];
-        d.querySelector('.v').textContent = p.Visual + ' (' + p['Sección'] + ')';
-        d.querySelector('.w').textContent = p['Dónde (Paso 3)'];
-        d.querySelector('.y').textContent = p['Por qué'];
-        list.appendChild(d);
-      });
-      if (!rows.length) { const e = document.createElement('p'); e.className = 'note'; e.style.padding = '14px 4px'; e.textContent = 'Ninguna pregunta coincide con la búsqueda.'; list.appendChild(e); }
-      $('inv-src').textContent = rows.length + ' de ' + inv.length + ' preguntas · toque una para ver su respuesta, la representación elegida y por qué · Paso 2 del notebook';
-    }
-    $('inv-q').addEventListener('input', e => { q = e.target.value; render(); });
-    render();
-  })();
 
   /* Modelos de la Etapa 4: real vs predicho, coeficientes, matrices de confusión y ROC */
   if (X) (function () {
