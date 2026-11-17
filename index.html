@@ -224,6 +224,14 @@ select:focus-visible, input[type=checkbox]:focus-visible, .reset:focus-visible {
 .roster.two > div:nth-child(-n+2) { border-top: 1px solid var(--line); }
 @media (max-width: 640px) { .roster.two { grid-template-columns: minmax(0, 1fr); } .roster.two > div:nth-child(2) { border-top: none; } }
 .stage3d.short { height: min(52vh, 460px); }
+.ingrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.ingrid > * { min-width: 0; }
+.incard { display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--flood); padding-top: 14px; }
+.incard h3 { font-size: 22px; }
+.incard .tbl { font-size: 13px; }
+.incard .tbl td, .incard .tbl th { white-space: normal; padding-right: 8px; }
+.incard .note { margin-top: 0; font-size: 14px; }
+@media (max-width: 1000px) { .ingrid { grid-template-columns: minmax(0, 1fr); } }
 .stage-legend { position: absolute; left: 12px; top: 10px; z-index: 3; flex-direction: column; gap: 6px; font-size: 12px; pointer-events: none; background: rgba(10,26,30,.6); padding: 8px 10px; }
 /* Inventario de preguntas */
 .invbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
@@ -445,10 +453,60 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   </div>
 </section>
 
+<!-- 9 · Valores de entrada de los dashboards -->
+<section class="slide alt" id="entradas" data-name="Entradas">
+  <div class="wrap">
+    <p class="kicker">09 <b>Etapa 5 · Valores de entrada</b></p>
+    <h2>¿Qué puede cambiar el usuario?</h2>
+    <p class="lead">Para cada experimento prescriptivo se separaron los valores que un club querría cambiar de los que son parte del método. El criterio: <b>es una entrada</b> si responde a una situación distinta del club (otro presupuesto, otra formación, otra oferta); <b>no lo es</b> si cambiarlo rompe la lógica del modelo, como las columnas que se usan o el solver.</p>
+    <div class="ingrid">
+      <div class="incard">
+        <h3>1 · Mercado de transferencias</h3>
+        <div class="tbl-wrap"><table class="tbl">
+          <tr><th>Entrada</th><th>Enunciado</th><th>Rango</th></tr>
+          <tr><td>Presupuesto</td><td>€100M</td><td>€10M a €300M</td></tr>
+          <tr><td>Jugadores a fichar</td><td>5</td><td>1 a 11</td></tr>
+          <tr><td>Edad menor a</td><td>25 años</td><td>18 a 35</td></tr>
+          <tr><td>Potencial mayor a</td><td>85</td><td>70 a 92</td></tr>
+          <tr><td>Media del valor por rating</td><td>Automática</td><td>4 opciones</td></tr>
+          <tr><td>Qué se maximiza</td><td>Potencial</td><td>3 opciones</td></tr>
+          <tr><td>Excluir valores estimados</td><td>No</td><td>Sí / No</td></tr>
+        </table></div>
+        <p class="note">Cada club tiene su presupuesto y su horizonte: fichar para hoy (overall) o para el futuro (potencial).</p>
+      </div>
+      <div class="incard">
+        <h3>2 · Construcción de equipo</h3>
+        <div class="tbl-wrap"><table class="tbl">
+          <tr><th>Entrada</th><th>Enunciado</th><th>Rango</th></tr>
+          <tr><td>Presupuesto (costo menor a)</td><td>€150M</td><td>€20M a €400M</td></tr>
+          <tr><td>Formación</td><td>1-4-3-3</td><td>6 sistemas</td></tr>
+          <tr><td>Método en la cancha</td><td>Greedy y linprog</td><td>Uno u otro</td></tr>
+          <tr><td>Edad máxima</td><td>Sin límite</td><td>17 a 45</td></tr>
+          <tr><td>Excluir valores estimados</td><td>No</td><td>Sí / No</td></tr>
+        </table></div>
+        <p class="note">Cada entrenador juega con su sistema y su presupuesto; la edad máxima permite armar, por ejemplo, el mejor equipo sub-23.</p>
+      </div>
+      <div class="incard">
+        <h3>3 · Vender o no</h3>
+        <div class="tbl-wrap"><table class="tbl">
+          <tr><th>Entrada</th><th>Enunciado</th><th>Rango</th></tr>
+          <tr><td>Edad, overall, potencial</td><td>28 · 82 · 83</td><td>17-40 · 55-92 · 55-95</td></tr>
+          <tr><td>Oferta recibida</td><td>Supuesto: €16.2M</td><td>€0.5M a €150M</td></tr>
+          <tr><td>Salario semanal</td><td>Supuesto: €67K</td><td>€1K a €600K</td></tr>
+          <tr><td>Amplitud de los pares</td><td>±2 overall, ±2 años</td><td>±1 a ±5</td></tr>
+          <tr><td>Criterios para vender</td><td>2 de 3</td><td>1 a 3</td></tr>
+        </table></div>
+        <p class="note">El enunciado no da el valor ni el salario del jugador: el usuario ingresa la oferta real y el mismo análisis sirve para cualquier jugador.</p>
+      </div>
+    </div>
+    <p class="source">Paso 4.1 del notebook · cada dashboard trae el botón «Valores del enunciado» para volver a los resultados de la Etapa 4</p>
+  </div>
+</section>
+
 <!-- 7 · Dashboard: mercado de transferencias (3D) -->
 <section class="slide" id="fichajes" data-name="Fichajes">
   <div class="wrap">
-    <p class="kicker">09 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
+    <p class="kicker">10 <b>Dashboard · Mercado de transferencias · temporada 2024</b></p>
     <h2 id="tf-title">Cinco promesas por <span class="hl">€41.0M</span></h2>
     <div class="dash">
       <div class="ctrl">
@@ -478,7 +536,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 8 · Dashboard: construcción de equipo (3D) -->
 <section class="slide alt" id="equipo" data-name="Equipo">
   <div class="wrap">
-    <p class="kicker">10 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
+    <p class="kicker">11 <b>Dashboard · Construcción de equipo · costo menor al presupuesto</b></p>
     <h2 id="eq-title">Greedy contra programación lineal</h2>
     <div class="dash">
       <div class="ctrl">
@@ -508,7 +566,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 9 · Dashboard: vender o no -->
 <section class="slide" id="venta" data-name="Venta">
   <div class="wrap">
-    <p class="kicker">11 <b>Dashboard · ¿Vender o retener?</b></p>
+    <p class="kicker">12 <b>Dashboard · ¿Vender o retener?</b></p>
     <h2 id="v-title">28 años, overall 82, potencial 83</h2>
     <div class="dash">
       <div class="ctrl">
@@ -538,7 +596,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 10 · Cierre -->
 <section class="slide alt" id="cierre" data-name="Cierre">
   <div class="wrap">
-    <p class="kicker">12 <b>Conclusiones</b></p>
+    <p class="kicker">13 <b>Conclusiones</b></p>
     <h2>Lo que deja el proyecto</h2>
     <div class="closing">
       <ol class="takeaways">
@@ -560,7 +618,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 13 · Anexo: explorar los datos -->
 <section class="slide" id="explorar" data-name="Explorar">
   <div class="wrap">
-    <p class="kicker">13 <b>Anexo · Explorar los datos</b></p>
+    <p class="kicker">14 <b>Anexo · Explorar los datos</b></p>
     <h2>Para las preguntas del jurado</h2>
     <p class="lead">Distribuciones, rankings y anomalías de la Etapa 3, calculados sobre el dataset completo de 175,872 registros.</p>
     <div class="seg" role="group" aria-label="Qué explorar">
