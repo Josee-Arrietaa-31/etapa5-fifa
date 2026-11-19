@@ -287,6 +287,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 .rk .bar span { position: absolute; inset: 0 auto 0 0; background: var(--sky); }
 .rk > div:first-child .bar span { background: var(--flood); }
 .rk .val { font: 600 14px/1 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.lead code { font: 500 0.9em var(--mono); color: var(--chalk); }
 @media (max-width: 640px) { .rk > div { grid-template-columns: 22px minmax(0, 1fr) auto; } .rk .bar { grid-column: 2 / 4; } }
 
 .reveal { transition: opacity .7s ease, transform .7s ease; }
@@ -338,6 +339,10 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
       <div class="stat"><span class="num" data-count="10">10</span><span class="cap">temporadas, de 2015 a 2024</span></div>
       <div class="stat"><span class="num" data-count="14056">14,056</span><span class="cap">jugadores activos en el mercado 2024</span></div>
       <div class="stat warn"><span class="num" data-count="31.6" data-suffix="%" data-dec="1">31.6%</span><span class="cap">de los valores de 2024 fueron estimados en la limpieza</span></div>
+    </div>
+    <div class="col" style="gap:8px">
+      <h3>Pipeline de carga (Etapa 2): temporada por temporada, sin duplicados</h3>
+      <svg class="chart" id="c-pipe" viewBox="0 0 900 190" role="img" aria-label="Registros cargados por temporada y acumulado"></svg>
     </div>
     <p class="source">Fuente: Etapas 1 y 4 · seis features derivados (GrupoEdad, TipoPosición, BrechaPotencial, IMC, ratio valor/salario, rating de atributos)</p>
   </div>
@@ -576,10 +581,25 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
   </div>
 </section>
 
+<!-- 12 · Contratación -->
+<section class="slide alt" id="contratacion" data-name="Contratación">
+  <div class="wrap">
+    <p class="kicker">12 <b>Prescriptivo · Contratación</b></p>
+    <h2>Un defensor, un mediocampista y un delantero</h2>
+    <p class="lead">Top 3 más eficientes por posición: puntos de <code>overall</code> por cada millón de euros, entre los jugadores del mercado 2024 con overall de 75 o más. No es un dashboard porque no tiene valores que el usuario cambie: la respuesta es una lista fija de jugadores.</p>
+    <div class="seg" role="group" aria-label="Lista de candidatos">
+      <button type="button" id="b-ct-gen" aria-pressed="true">Todos</button>
+      <button type="button" id="b-ct-jov" aria-pressed="false">Hasta 28 años</button>
+    </div>
+    <div class="ingrid" id="ct-grid"></div>
+    <p class="source" id="ct-src"></p>
+  </div>
+</section>
+
 <!-- 10 · Cierre -->
 <section class="slide alt" id="cierre" data-name="Cierre">
   <div class="wrap">
-    <p class="kicker">12 <b>Conclusiones</b></p>
+    <p class="kicker">13 <b>Conclusiones</b></p>
     <h2>Lo que deja el proyecto</h2>
     <div class="closing">
       <ol class="takeaways">
@@ -601,13 +621,13 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <!-- 13 · Anexo: explorar los datos -->
 <section class="slide" id="explorar" data-name="Explorar">
   <div class="wrap">
-    <p class="kicker">13 <b>Anexo · Explorar los datos</b></p>
+    <p class="kicker">14 <b>Anexo · Explorar los datos</b></p>
     <h2>Para las preguntas del jurado</h2>
-    <p class="lead">Distribuciones, rankings y anomalías de la Etapa 3, calculados sobre el dataset completo de 175,872 registros.</p>
+    <p class="lead">Todas las preguntas obligatorias de la Etapa 3: distribuciones, rankings y tablas de anomalías, reclutamiento, inversiones y profiling, calculados sobre el dataset completo de 175,872 registros.</p>
     <div class="seg" role="group" aria-label="Qué explorar">
       <button type="button" id="b-ex-dist" aria-pressed="true">Distribuciones</button>
       <button type="button" id="b-ex-rank" aria-pressed="false">Rankings</button>
-      <button type="button" id="b-ex-anom" aria-pressed="false">Anomalías</button>
+      <button type="button" id="b-ex-anom" aria-pressed="false">Tablas</button>
     </div>
     <div id="ex-dist" class="col">
       <div class="excontrols">
@@ -626,7 +646,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
       <div class="rk" id="ex-rk-list"></div>
     </div>
     <div id="ex-anom" class="col" hidden>
-      <div class="excontrols"><select id="ex-an" aria-label="Tabla de anomalías"></select></div>
+      <div class="excontrols"><select id="ex-an" aria-label="Tabla de la Etapa 3"></select></div>
       <div class="tbl-wrap"><table class="tbl" id="ex-an-tbl"></table></div>
     </div>
     <p class="source">Un registro por jugador en los rankings de jugadores · clubes con al menos 50 registros y nacionalidades con al menos 100 · bigotes del boxplot = 1.5 × IQR</p>
@@ -639,6 +659,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 <script src="mercado.js"></script>
 <script src="solver.js"></script>
 <script src="extra.js"></script>
+<script src="extra2.js"></script>
 <script>
 (function () {
   'use strict';
@@ -1044,7 +1065,7 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
         w.innerHTML = '<h3></h3><table><tr><th></th><th>Predice ≤ 85</th><th>Predice > 85</th></tr>' +
           '<tr><th>Real ≤ 85</th>' + cell(d.cm[0][0], 'aciertos') + cell(d.cm[0][1], 'falsas alarmas') + '</tr>' +
           '<tr><th>Real > 85</th>' + cell(d.cm[1][0], 'no detectados') + cell(d.cm[1][1], 'detectados') + '</tr></table>' +
-          '<p class="met">Precisión ' + d.precision.toFixed(2) + ' · Recall ' + d.recall.toFixed(2) + ' · F1 ' + d.f1.toFixed(2) + ' · PR-AUC ' + d.pr_auc.toFixed(2) + '</p>';
+          '<p class="met">' + (window.EXTRA2 && EXTRA2.accuracy[nombre] != null ? 'Accuracy ' + EXTRA2.accuracy[nombre].toFixed(2) + ' · ' : '') + 'Precisión ' + d.precision.toFixed(2) + ' · Recall ' + d.recall.toFixed(2) + ' · F1 ' + d.f1.toFixed(2) + ' · PR-AUC ' + d.pr_auc.toFixed(2) + '</p>';
         w.querySelector('h3').textContent = nombre;
         box.appendChild(w);
       });
@@ -1135,8 +1156,26 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
     drawDist();
     // Rankings
     const sr = $('ex-rk');
+    const B2 = (window.EXTRA2 && EXTRA2.barras) || {};
     Object.keys(E.rankings).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = 'Top 10 · ' + k; sr.appendChild(o); });
+    Object.keys(B2).forEach(k => { const o = document.createElement('option'); o.value = 'b:' + k; o.textContent = k; sr.appendChild(o); });
+    function drawBarras(filas) {
+      const list = $('ex-rk-list'); list.innerHTML = '';
+      const vals = filas.map(f => f.valor), mx = Math.max(...vals), mnv = Math.min(...vals);
+      const mn = (mx - mnv) / mx < 0.15 ? mnv * 0.97 : 0;
+      filas.forEach((f, i) => {
+        const d = document.createElement('div');
+        d.innerHTML = '<span class="pos"></span><span class="nm"><span></span><small></small></span><span class="bar"><span></span></span><span class="val"></span>';
+        d.querySelector('.pos').textContent = i + 1;
+        d.querySelector('.nm span').textContent = f.nombre;
+        d.querySelector('small').textContent = f.extra || '';
+        d.querySelector('.bar span').style.width = Math.max(2, (f.valor - mn) / (mx - mn || 1) * 100) + '%';
+        d.querySelector('.val').textContent = f.texto;
+        list.appendChild(d);
+      });
+    }
     function drawRank() {
+      if (sr.value.startsWith('b:')) { drawBarras(B2[sr.value.slice(2)]); return; }
       const R = E.rankings[sr.value], list = $('ex-rk-list'); list.innerHTML = '';
       const vals = R.filas.map(f => f.valor), mx = Math.max(...vals), mn = R.euro || R.titulo === 'Registros' ? 0 : Math.min(...vals) * 0.97;
       R.filas.forEach((f, i) => {
@@ -1153,14 +1192,64 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
     sr.addEventListener('change', drawRank); drawRank();
     // Anomalías
     const sa = $('ex-an');
+    const T2 = (window.EXTRA2 && EXTRA2.tablas) || {};
     Object.keys(E.anomalias).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; sa.appendChild(o); });
+    Object.keys(T2).forEach(k => { const o = document.createElement('option'); o.value = 't:' + k; o.textContent = k; sa.appendChild(o); });
     function drawAnom() {
-      const A = E.anomalias[sa.value], t = $('ex-an-tbl');
-      t.innerHTML = '';
+      const t = $('ex-an-tbl'); t.innerHTML = '';
+      if (sa.value.startsWith('t:')) {
+        const A = T2[sa.value.slice(2)], num = new Set(A.num);
+        const hr = document.createElement('tr'); A.cols.forEach((c, j) => { const th = document.createElement('th'); th.textContent = c; if (num.has(j)) th.className = 'num'; hr.appendChild(th); }); t.appendChild(hr);
+        A.filas.forEach(f => { const tr = document.createElement('tr'); f.forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (num.has(j)) td.className = 'num'; if (A.cols[j] === 'Decisión' || A.cols[j] === 'Acción' || A.cols[j] === 'Casos más extremos') td.style.whiteSpace = 'normal'; tr.appendChild(td); }); t.appendChild(tr); });
+        return;
+      }
+      const A = E.anomalias[sa.value];
       const hr = document.createElement('tr'); A.cols.forEach((c, j) => { const th = document.createElement('th'); th.textContent = c; if (j >= 3) th.className = 'num'; hr.appendChild(th); }); t.appendChild(hr);
       A.filas.forEach(f => { const tr = document.createElement('tr'); f.forEach((v, j) => { const td = document.createElement('td'); td.textContent = A.cols[j].includes('€') ? '€' + nfmt(v) : (typeof v === 'number' ? (Number.isInteger(v) ? String(v) : v.toFixed(1)) : v); if (j >= 3) td.className = 'num'; tr.appendChild(td); }); t.appendChild(tr); });
     }
     sa.addEventListener('change', drawAnom); drawAnom();
+  })();
+
+  /* ---------- Novedades de la v2 del notebook: pipeline de carga y contratación ---------- */
+  const X2 = window.EXTRA2;
+  if (X2) (function () {
+    // Pipeline de carga: barras por temporada con el acumulado
+    const svg = $('c-pipe'), P = X2.pipeline, x0 = 30, x1 = 890, y0 = 140, y1 = 26, mx = Math.max(...P.map(r => r[1]));
+    const bw = (x1 - x0) / P.length;
+    P.forEach((r, i) => {
+      const h = r[1] / mx * (y0 - y1), x = x0 + i * bw;
+      el('rect', { x: x + bw * 0.18, y: y0 - h, width: bw * 0.64, height: h, fill: i === P.length - 1 ? C.flood : C.sky, opacity: 0.85 }, svg);
+      el('text', { x: x + bw / 2, y: y0 - h - 6, 'text-anchor': 'middle', style: 'fill:' + C.chalk }, svg, nfmt(r[1]));
+      el('text', { x: x + bw / 2, y: y0 + 18, 'text-anchor': 'middle' }, svg, String(r[0]));
+      el('text', { x: x + bw / 2, y: y0 + 36, 'text-anchor': 'middle', style: 'fill:' + C.faint + ';font-size:10px' }, svg, 'Σ ' + nfmt(r[2]));
+    });
+    const dup = P.reduce((a, r) => a + r[3], 0);
+    el('text', { x: x0, y: 12, style: 'fill:' + C.faint }, svg, P.length + ' lotes · ' + nfmt(P[P.length - 1][2]) + ' registros en total · ' + dup + ' duplicados (jugador, temporada) · Σ = acumulado');
+  })();
+  if (X2) (function () {
+    const C3 = X2.contratacion, POS3 = { Defensor: 'Defensa', Mediocampista: 'Mediocampista', Delantero: 'Delantero' };
+    function draw(lista) {
+      const g = $('ct-grid'); g.innerHTML = '';
+      Object.keys(POS3).forEach(pos => {
+        const card = document.createElement('div'); card.className = 'incard';
+        const h = document.createElement('h3'); h.textContent = pos; card.appendChild(h);
+        const ro = document.createElement('div'); ro.className = 'roster';
+        lista.filter(c => c.pos === pos).forEach(c => {
+          const d = document.createElement('div');
+          d.innerHTML = '<i></i><span><span class="nm"></span><br><small></small></span><span class="r"></span><span class="v"></span>';
+          d.querySelector('i').style.background = c.rec ? C.flood : POSC[POS3[pos]];
+          d.querySelector('.nm').textContent = c.puesto + '. ' + c.nombre + (c.rec ? '  ✔ recomendado' : '');
+          d.querySelector('small').textContent = c.club + ' · ' + c.posp + ' · ' + c.edad + ' años · overall ' + c.overall + (c.estimado ? ' · valor estimado' : '');
+          d.querySelector('.r').textContent = c.efic.toFixed(1) + ' / M€';
+          d.querySelector('.v').textContent = c.valor;
+          ro.appendChild(d);
+        });
+        card.appendChild(ro); g.appendChild(card);
+      });
+    }
+    segToggle([['b-ct-gen', 'general'], ['b-ct-jov', 'jovenes']], k => draw(C3[k]));
+    draw(C3.general);
+    $('ct-src').textContent = 'Eficiencia mediana de los ' + nfmt(C3.n) + ' jugadores con overall ≥ 75: ' + C3.mediana + ' puntos por millón · ✔ recomendado = está en el top 3 de las dos listas · Tablas 4.2 y 4.3 del notebook';
   })();
 
   /* ---------- Escenas 3D ---------- */
