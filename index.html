@@ -661,10 +661,10 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="mercado.js"></script>
-<script src="solver.js"></script>
-<script src="extra.js"></script>
-<script src="extra2.js"></script>
+<script src="mercado.js?v=20261119"></script>
+<script src="solver.js?v=20261119"></script>
+<script src="extra.js?v=20261119"></script>
+<script src="extra2.js?v=20261119"></script>
 <script>
 (function () {
   'use strict';
@@ -1128,14 +1128,28 @@ input[type=search]:focus-visible { outline: 2px solid var(--sky); outline-offset
       cl.disabled = !['value_eur', 'wage_eur'].includes(sv.value);
       const D = E.dist[sv.value + '|' + (log ? 1 : 0) + '|' + sg.value]; if (!D) return;
       const h = $('c-hist'); h.innerHTML = '';
-      const x0 = 50, x1 = 548, y0 = 255, y1 = 16, ed = D.edges, lo = ed[0], hi = ed[ed.length - 1];
-      const mx = Math.max(...D.series.flatMap(s => s.counts)), Xs = v => x0 + (v - lo) / (hi - lo) * (x1 - x0), Ys = v => y0 - v / mx * (y0 - y1);
-      for (let i = 0; i <= 4; i++) { const v = mx / 4 * i; el('line', { x1: x0, x2: x1, y1: Ys(v), y2: Ys(v), class: 'grid' }, h); el('text', { x: x0 - 6, y: Ys(v) + 4, 'text-anchor': 'end' }, h, nfmt(v)); }
-      for (let i = 0; i <= 5; i++) { const v = lo + (hi - lo) / 5 * i; el('text', { x: Xs(v), y: y0 + 18, 'text-anchor': 'middle' }, h, fv(v, log)); }
+      const x0 = 58, x1 = 548, y0 = 252, y1 = 34, ed = D.edges, lo = ed[0], hi = ed[ed.length - 1];
+      const marcas = (a, b, n) => { const s0 = (b - a || 1) / n, m = Math.pow(10, Math.floor(Math.log10(s0))), e = s0 / m;
+        const st = (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1) * m, out = [];
+        for (let v = Math.ceil(a / st - 1e-9) * st; v <= b + st * 1e-9; v += st) out.push(+v.toFixed(10)); return { st, out }; };
+      const mx = Math.max(...D.series.flatMap(s => s.counts)), my = marcas(0, mx, 4), ymax = Math.ceil(mx / my.st) * my.st;
+      const Xs = v => x0 + (v - lo) / (hi - lo) * (x1 - x0), Ys = v => y0 - v / ymax * (y0 - y1);
+      for (let v = 0; v <= ymax + 1e-9; v += my.st) { el('line', { x1: x0, x2: x1, y1: Ys(v), y2: Ys(v), class: 'grid' }, h); el('text', { x: x0 - 8, y: Ys(v) + 4, 'text-anchor': 'end' }, h, nfmt(v)); }
+      el('line', { x1: x0, x2: x1, y1: y0, y2: y0, class: 'axis' }, h);
+      const etx = v => log ? eur(Math.pow(10, v)) : (D.entero ? String(Math.round(v)) : fv(v, false));
+      marcas(lo, hi, log ? 5 : 6).out.filter(v => v >= lo && v <= hi).forEach(v => { el('line', { x1: Xs(v), x2: Xs(v), y1: y0, y2: y0 + 5, stroke: C.faint }, h); el('text', { x: Xs(v), y: y0 + 19, 'text-anchor': 'middle' }, h, etx(v)); });
       D.series.forEach(s => s.counts.forEach((c, i) => { if (c) el('rect', { x: Xs(ed[i]) + 0.5, y: Ys(c), width: Math.max(1, Xs(ed[i + 1]) - Xs(ed[i]) - 1), height: y0 - Ys(c), fill: GC[s.nombre] || C.sky, opacity: D.series.length > 1 ? 0.5 : 0.85 }, h); }));
       if (D.series.length === 1) {
-        const st = D.series[0].stats;
-        [[st.media, 'media', C.sell], [st.mediana, 'mediana', '#5CC98B']].forEach(([v, t, c], i) => { el('line', { x1: Xs(v), x2: Xs(v), y1: y1, y2: y0, stroke: c, 'stroke-dasharray': '5 4', 'stroke-width': 2 }, h); el('text', { x: Xs(v) + (i ? -6 : 6), y: y1 + 12, 'text-anchor': i ? 'end' : 'start', style: 'fill:' + c }, h, t + ' ' + fv(v, log)); });
+        const st = D.series[0].stats, ley = [[st.media, 'media', C.sell], [st.mediana, 'mediana', '#5CC98B']];
+        ley.forEach(([v, , c]) => el('line', { x1: Xs(v), x2: Xs(v), y1: y1 - 4, y2: y0, stroke: c, 'stroke-dasharray': '5 4', 'stroke-width': 2 }, h));
+        let lx = x1;
+        ley.slice().reverse().forEach(([v, t, c]) => {
+          const txt = t + ' ' + fv(v, log), w = txt.length * 7.2 + 26;
+          lx -= w;
+          el('line', { x1: lx, x2: lx + 16, y1: 10, y2: 10, stroke: c, 'stroke-dasharray': '5 4', 'stroke-width': 2 }, h);
+          el('text', { x: lx + 22, y: 14, style: 'fill:' + c }, h, txt);
+          lx -= 12;
+        });
       }
       el('text', { x: x1, y: y0 + 38, 'text-anchor': 'end', style: 'fill:' + C.faint }, h, E.vars[sv.value] + (log ? ' (escala log)' : '') + ' · registros por intervalo');
       const b = $('c-box'); b.innerHTML = '';
